@@ -46,11 +46,13 @@ class _CustomizeDialogState extends State<CustomizeDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
 
+          widget.title.isEmpty ? Container() :
           Container(
             padding: const EdgeInsets.only(top: 20, bottom: 20),
             child: Text(widget.title, style: const TextStyle(fontWeight: FontWeight.bold),)
           ),
 
+          widget.content.isEmpty ? Container() :
           Padding(
             padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 40),
             child: Text(widget.content, textAlign: TextAlign.center,)
@@ -61,6 +63,7 @@ class _CustomizeDialogState extends State<CustomizeDialog> {
           IntrinsicHeight(
             child: Row(
               children: [
+                widget.submitBtnText.isEmpty ? Container() :
                 Expanded(
                   child: TextButton(
                     onPressed: () => _submitOnclick(), 

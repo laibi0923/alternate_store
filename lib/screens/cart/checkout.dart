@@ -10,11 +10,12 @@ import 'package:alternate_store/model/paymentmethod_model.dart';
 import 'package:alternate_store/model/user_model.dart';
 import 'package:alternate_store/screens/cart/shipping.dart';
 import 'package:alternate_store/viewmodel/checkout_viewmodel.dart';
+import 'package:alternate_store/widgets/customize_dialog.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 // import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:provider/provider.dart';
@@ -30,61 +31,6 @@ class CheckOut extends StatefulWidget {
 class _CheckOutState extends State<CheckOut> {
 
   int _initTagIndex = 0;
-
-  // ignore: prefer_final_fields
-  ReceivePort _port = ReceivePort();
-
-  @override
-  void initState() {
-    super.initState();
-    IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
-    _port.listen((dynamic data) {
-      // ignore: unused_local_variable
-      String id = data[0];
-      // ignore: unused_local_variable
-      DownloadTaskStatus status = data[1];
-      // ignore: unused_local_variable
-      int progress = data[2];
-      setState((){ });
-    });
-
-    FlutterDownloader.registerCallback(downloadCallback);
-  }
-
-  @override
-  void dispose() {
-    IsolateNameServer.removePortNameMapping('downloader_send_port');
-    super.dispose();
-  }
-
-  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
-    final SendPort send = IsolateNameServer.lookupPortByName('downloader_send_port');
-    send.send([id, status, progress]);
-  }
-
-  // 下載支付二維碼
-  Future<void> downloadQRCode(PaymentMethodModel paymentMethodModel) async {
-    try{
-      Directory directory = Platform.isAndroid ? 
-      await getExternalStorageDirectory() :
-      await getApplicationDocumentsDirectory();
-
-      print(directory.path);
-
-      String x = await FlutterDownloader.enqueue(
-        url: paymentMethodModel.qrImage,
-        savedDir: directory.path,
-        showNotification: true,
-        openFileFromNotification: true,
-      );
-
-      print(x);
-
-    } on PlatformException catch (e){
-      // ignore: avoid_print
-      print('Failed to pick image : $e');
-    }
-  }
   
   @override
   Widget build(BuildContext context) {
@@ -144,16 +90,19 @@ class _CheckOutState extends State<CheckOut> {
             child: Container(
               padding: const EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
               decoration: BoxDecoration(
-                  color: const Color(cGrey),
-                  borderRadius: BorderRadius.circular(7)),
+                color: const Color(cGrey),
+                borderRadius: BorderRadius.circular(7)
+              ),
               child: _userInfo == null ?
               const Text('') :
+              _userInfo.unitAndBuilding.isEmpty &&
+              _userInfo.estate.isEmpty &&
+              _userInfo.district.isEmpty ?
+              const Center(
+                child: Text('\n點擊設定運送地址 \n')
+              ) :
               Text(
-                _userInfo.unitAndBuilding.isEmpty &&
-                _userInfo.estate.isEmpty &&
-                _userInfo.district.isEmpty
-                ? '點擊設定運送地址 \n'
-                : '${_userInfo.recipientName} \n${_userInfo.unitAndBuilding} \n${_userInfo.estate} ${_userInfo.district}',
+                '${_userInfo.recipientName} \n${_userInfo.unitAndBuilding} \n${_userInfo.estate} ${_userInfo.district}',
                 style: const TextStyle(height: 1.5),
               ),
             ),
@@ -225,7 +174,9 @@ class _CheckOutState extends State<CheckOut> {
 
         //  QR Code
         GestureDetector(
-          onTap: () => downloadQRCode(_paymentMethodList[_initTagIndex]),
+          onTap: () {
+            _checkoutviewmodel.downloadQRCode(_paymentMethodList[_initTagIndex]);
+          },
           child: SizedBox(
             height: 250,
             child: setCachedNetworkImage(_paymentMethodList[_initTagIndex].qrImage, BoxFit.contain),

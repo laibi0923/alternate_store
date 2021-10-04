@@ -48,8 +48,8 @@ dependencies:
   flutter_slidable: 
   cached_network_image: 
   google_fonts:
-  flutter_downloader:  
   path_provider:
+  gallery_saver:
 
 dev_dependencies:
   flutter_test:

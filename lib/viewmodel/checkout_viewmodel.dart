@@ -1,17 +1,16 @@
+// ignore_for_file: import_of_legacy_library_into_null_safe
 //@dart=2.9
 import 'dart:io';
 
+import 'package:alternate_store/main.dart';
+import 'package:alternate_store/widgets/customize_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
-// import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-// import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:alternate_store/main.dart';
 import 'package:alternate_store/model/order_model.dart';
 import 'package:alternate_store/model/paymentmethod_model.dart';
 import 'package:alternate_store/model/user_model.dart';
@@ -21,13 +20,29 @@ import 'package:alternate_store/service/order_service.dart';
 import 'package:alternate_store/service/servicesx.dart';
 import 'package:alternate_store/viewmodel/cart_viewmodel.dart';
 import 'package:alternate_store/widgets/custom_snackbar.dart';
-import 'package:alternate_store/widgets/customize_dialog.dart';
 import 'package:alternate_store/widgets/loading_indicator.dart';
 
 class CheckoutViewModel extends ChangeNotifier{
 
-
-  
+  // 下載支付二維碼
+  Future<void> downloadQRCode(PaymentMethodModel paymentMethodModel) async {
+    GallerySaver.saveImage('${paymentMethodModel.qrImage}.jpg').then((bool success) {
+      if(success){
+        return 
+        showDialog(
+          context: navigatorKey.currentContext, 
+          builder: (BuildContext context){
+            return const CustomizeDialog(
+              title: '已成功下載', 
+              content: '', 
+              submitBtnText: '', 
+              cancelBtnText: '取消'
+            );
+          }
+        );
+      }
+    });
+  }
 
   //  訂單資料
   Future<void> uploadpaymentButtonOnClick(BuildContext context, UserModel userInfo, OrderModel orderModel, String paymentMothed) async {
