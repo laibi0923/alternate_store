@@ -21,7 +21,7 @@ Widget addCartButton(BuildContext context, ProductModel productModel){
               style: const TextStyle(color: Colors.white),
             ),
             const Text(
-              '加入購物車',
+              '產品資訊',
               style: TextStyle(color: Colors.white),
             ),
           ],

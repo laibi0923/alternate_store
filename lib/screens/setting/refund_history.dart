@@ -31,26 +31,32 @@ class RefundHistory extends StatelessWidget {
           )
         ],
       ),
-      body: orderHistoryList.isEmpty ? const Text('尚未有任何退貨紀錄') :
-      ListView.builder(
-          physics: const BouncingScrollPhysics(),
-          itemCount: orderHistoryList.length,
-          itemBuilder: (context, index){
-            return ListView.builder(
-              itemCount: orderHistoryList[index].orderProduct.length,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              itemBuilder: (context, zindex){
-                return orderHistoryList[index].orderProduct[zindex]['REFUND_STATUS'] != '已退貨' ?  Container() :
-                _buildRefundItem(
-                  orderHistoryList[index],
-                  orderHistoryList[index].orderProduct[zindex]
-                );
-              }
-            );
-          }
-        ),
+      body: Center(
+        child: orderHistoryList.isEmpty ? 
+        const Text(
+          '尚未有任何退貨紀錄',
+          style: TextStyle(color: Colors.grey),
+        ) :
+        ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            itemCount: orderHistoryList.length,
+            itemBuilder: (context, index){
+              return ListView.builder(
+                itemCount: orderHistoryList[index].orderProduct.length,
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                itemBuilder: (context, zindex){
+                  return orderHistoryList[index].orderProduct[zindex]['REFUND_STATUS'] != '已退貨' ?  Container() :
+                  _buildRefundItem(
+                    orderHistoryList[index],
+                    orderHistoryList[index].orderProduct[zindex]
+                  );
+                }
+              );
+            }
+          ),
+      )  
     );
   }
 

@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 // import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:alternate_store/main.dart';
 import 'package:alternate_store/model/order_model.dart';
@@ -27,58 +27,58 @@ class CheckoutViewModel extends ChangeNotifier{
 
   // 下載支付二維碼
   Future<void> downloadQRCode(PaymentMethodModel paymentMethodModel) async {
-    var permissionStatus = await Permission.storage.status;
+    // var permissionStatus = await Permission.storage.status;
 
-    if(permissionStatus.isGranted){
+    // if(permissionStatus.isGranted){
 
-      try{
+    //   try{
         
-        // Directory directory = Platform.isAndroid ? 
-        // await getExternalStorageDirectory() :
-        // await getApplicationDocumentsDirectory();
+    //     // Directory directory = Platform.isAndroid ? 
+    //     // await getExternalStorageDirectory() :
+    //     // await getApplicationDocumentsDirectory();
 
-        // print(directory.path);
+    //     // print(directory.path);
 
-        // await FlutterDownloader.enqueue(
-        //   url: paymentMethodModel.qrImage,
-        //   savedDir: directory.path,
-        //   showNotification: true,
-        //   openFileFromNotification: true,
-        // );
+    //     // await FlutterDownloader.enqueue(
+    //     //   url: paymentMethodModel.qrImage,
+    //     //   savedDir: directory.path,
+    //     //   showNotification: true,
+    //     //   openFileFromNotification: true,
+    //     // );
 
-        // print('>>>>>>');
+    //     // print('>>>>>>');
 
-      } on PlatformException catch (e){
-        // ignore: avoid_print
-        print('Failed to pick image : $e');
-      }
+    //   } on PlatformException catch (e){
+    //     // ignore: avoid_print
+    //     print('Failed to pick image : $e');
+    //   }
 
-    } else if(permissionStatus.isDenied) {
+    // } else if(permissionStatus.isDenied) {
 
-      Permission.storage.shouldShowRequestRationale.then((value) async {
+    //   Permission.storage.shouldShowRequestRationale.then((value) async {
 
-        var requestresult = await Permission.storage.request();
+    //     var requestresult = await Permission.storage.request();
 
-        if(value == false && requestresult.isPermanentlyDenied){
+    //     if(value == false && requestresult.isPermanentlyDenied){
 
-          bool result = await showDialog(
-            context: navigatorKey.currentContext,
-            builder: (BuildContext context){
-              return const CustomizeDialog(
-                title: '存取檔案權限',
-                content: '尚未取得存取檔案權限，如想使用此功能可前往設定頁面設定。',
-                submitBtnText: '立即前往',
-                cancelBtnText: '取消',
-              );
-            }
-          );
+    //       bool result = await showDialog(
+    //         context: navigatorKey.currentContext,
+    //         builder: (BuildContext context){
+    //           return const CustomizeDialog(
+    //             title: '存取檔案權限',
+    //             content: '尚未取得存取檔案權限，如想使用此功能可前往設定頁面設定。',
+    //             submitBtnText: '立即前往',
+    //             cancelBtnText: '取消',
+    //           );
+    //         }
+    //       );
 
-          if(result == true) {openAppSettings();}
+    //       if(result == true) {openAppSettings();}
 
-        }
-      });
+    //     }
+    //   });
 
-    }
+    // }
   }
 
   //  訂單資料
@@ -93,57 +93,53 @@ class CheckoutViewModel extends ChangeNotifier{
 
     //  上載支付收據
     String uploadImagepath = '';
-    var permissionStatus = await Permission.storage.status;
+    // var permissionStatus = await Permission.storage.status;
 
-    if (permissionStatus.isGranted) {
-      try {
-        final image =
-            await ImagePicker().pickImage(source: ImageSource.gallery);
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) {
+        return;
+      } else {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return loadingIndicator();
+            });
 
-        if (image == null) {
-          return;
-        } else {
-          showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return loadingIndicator();
-              });
-
-          final File imageFile = File(image.path);
-          uploadImagepath = await ServicesX().uploadImage(
-              'payment/${ServicesX().randomStringGender(10, true).toUpperCase()}.jpg',
-              imageFile);
-        }
-      } on PlatformException catch (e) {
-        // ignore: avoid_print
-        print('Failed to pick image : $e');
+        final File imageFile = File(image.path);
+        uploadImagepath = await ServicesX().uploadImage(
+            'payment/${ServicesX().randomStringGender(10, true).toUpperCase()}.jpg',
+            imageFile);
       }
+    } on PlatformException catch (e) {
+      // ignore: avoid_print
+      print('Failed to pick image : $e');
     }
 
-    if (permissionStatus.isDenied) {
-      Permission.storage.shouldShowRequestRationale.then((value) async {
-        var requestresult = await Permission.storage.request();
-        if (value == false && requestresult.isPermanentlyDenied) {
-          bool result = await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const CustomizeDialog(
-                  title: '存取檔案權限',
-                  content: '尚未取得存取檔案權限，如想使用此功能可前往設定頁面設定。',
-                  submitBtnText: '立即前往',
-                  cancelBtnText: '取消',
-                );
-              });
-          if (result == true) {
-            openAppSettings();
-            return;
-          }
-        }
-      });
+    // if (permissionStatus.isDenied) {
+    //   Permission.storage.shouldShowRequestRationale.then((value) async {
+    //     var requestresult = await Permission.storage.request();
+    //     if (value == false && requestresult.isPermanentlyDenied) {
+    //       bool result = await showDialog(
+    //           context: context,
+    //           builder: (BuildContext context) {
+    //             return const CustomizeDialog(
+    //               title: '存取檔案權限',
+    //               content: '尚未取得存取檔案權限，如想使用此功能可前往設定頁面設定。',
+    //               submitBtnText: '立即前往',
+    //               cancelBtnText: '取消',
+    //             );
+    //           });
+    //       if (result == true) {
+    //         openAppSettings();
+    //         return;
+    //       }
+    //     }
+    //   });
 
-      return;
-    }
+    //   return;
+    // }
 
     //  收件人資料
     Map<String, dynamic> receipientInfo = {

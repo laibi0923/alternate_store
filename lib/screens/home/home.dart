@@ -20,9 +20,8 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final productlist = Provider.of<List<ProductModel>>(context);
+    final _productlist = Provider.of<List<ProductModel>>(context);
     final _homeScreenViewModel = Provider.of<HomeScreenViewModel>(context);
-    _homeScreenViewModel.setProductlistStatus(productlist);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -31,7 +30,7 @@ class Home extends StatelessWidget {
       headerSliverBuilder: (content, innerBoxIsScrolled) => [
         _appBar(context) 
       ],
-      body: _homeScreenViewModel.productlistState == status.loading ?
+      body: _productlist == null ?
       const Center(
         child: CircularProgressIndicator()
       ) :
@@ -41,19 +40,17 @@ class Home extends StatelessWidget {
         padding: const EdgeInsets.only(left: 20, right: 20),
         children: [
 
-          _buildImageSilder(context),
-
-          _buildHotItem(),
+          _buildBannerList(context),
 
           _buiildLeaderboard(
             context, 
             _homeScreenViewModel, 
-            productlist
+            _productlist
           ),
           
           _buildRecommendList(
             context, 
-            productlist
+            _productlist
           ),
 
           Container(
@@ -92,13 +89,15 @@ Widget _appBar(BuildContext context){
 }
 
 
-Widget _buildImageSilder(BuildContext context){
+Widget _buildBannerList(BuildContext context){
 
   final _homeScreenViewModel = Provider.of<HomeScreenViewModel>(context);
 
-  return Column(
+  return ListView(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
     children: [
-      // 
+
        GestureDetector(
         onTap:() => _homeScreenViewModel.navigatorPushtPage(const SearchScreen(searchKey: '半截裙')),
         child: Container(
@@ -117,62 +116,18 @@ Widget _buildImageSilder(BuildContext context){
       ),
 
       Container(
-        padding: const EdgeInsets.only(top: 20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-
-            Container(
-              margin: const EdgeInsets.only(left: 5, right: 5),
-              height: 15,
-              width: 15,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(999)
-              ),
-            ),
-
-            Container(
-              margin: const EdgeInsets.only(left: 5, right: 5),
-              height: 10,
-              width: 10,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(999)
-              ),
-            ),
-
-            Container(
-              margin: const EdgeInsets.only(left: 5, right: 5),
-              height: 10,
-              width: 10,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(999)
-              ),
-            ),
-            
-          ],
+        height: 220,
+        margin: const EdgeInsets.only(top: 20),
+        decoration: BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.circular(17)
         ),
-      ),
+        child: const Center(
+          child: Text('熱賣產品'),
+        ),
+      )
 
     ],
-  );
-}
-
-
-Widget _buildHotItem(){
-  return Container(
-    height: 220,
-    margin: const EdgeInsets.only(top: 20),
-    decoration: BoxDecoration(
-      color: Colors.grey,
-      borderRadius: BorderRadius.circular(17)
-    ),
-    child: const Center(
-      child: Text('熱賣產品'),
-    ),
   );
 }
 
@@ -209,7 +164,7 @@ Widget _buiildLeaderboard(BuildContext context, HomeScreenViewModel homeScreenVi
           itemBuilder: (context, index){
             return Stack(
               children: [
-                productlist.isEmpty || productlist == null? 
+                productlist.isEmpty || productlist == null || productlist.length <= index ? 
                 ClipRRect(borderRadius: BorderRadius.circular(10),
                   child: Container(
                     height: 180,

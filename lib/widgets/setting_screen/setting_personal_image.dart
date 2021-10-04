@@ -4,7 +4,7 @@ import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 
 Widget userImage(String imageUri) {
   // ignore: unnecessary_null_comparison
-  return imageUri.isEmpty || imageUri == null ? 
+  return imageUri == null || imageUri.isEmpty? 
   Container(
     height: 200,
     width: 200,

@@ -13,8 +13,12 @@ class ProductDetailsViewModel extends ChangeNotifier{
   bool onWishList = false;
   int wishlistIndex = 0;
   int imageIndex = 0;
-  
-  
+
+  void initProductDetails(){
+    wishlistIndex = 0;
+    imageIndex = 0;
+    onWishList = false;
+  }
 
   void updateImageIndex(int index){
     imageIndex = index;
@@ -22,8 +26,7 @@ class ProductDetailsViewModel extends ChangeNotifier{
   }
  
   //  Check wishlist or not
-  void checkOnWishList(List<WishListModel> wishlist, String productNo){
-    onWishList = false;
+  void checkOnWishlist(List<WishListModel> wishlist, String productNo){
     if(wishlist.isNotEmpty){
       for(int i = 0; i < wishlist.length; i++){
         if(wishlist[i].productNo == productNo){

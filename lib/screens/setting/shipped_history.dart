@@ -73,7 +73,11 @@ class ShippingHistory extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: orderHistoryList.isEmpty ? const Text('尚未有任何出貨紀錄') :
+        child: orderHistoryList.isEmpty ? 
+        const Text(
+          '尚未有任何出貨紀錄',
+          style: TextStyle(color: Colors.grey),
+        ) :
         ListView.builder(
           physics: const BouncingScrollPhysics(),
           itemCount: orderHistoryList.length,

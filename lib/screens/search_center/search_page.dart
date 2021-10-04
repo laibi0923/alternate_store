@@ -22,16 +22,24 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    final _productlist = Provider.of<List<ProductModel>>(context, listen: false);
-    final _categorylist = Provider.of<List<CategoryModel>>(context, listen: false);
+    
     final _searchPageViewModel = Provider.of<SearchPageViewModel>(context, listen: false);
-    _searchPageViewModel.initViewModel(_productlist, _categorylist);
+    _searchPageViewModel.initViewModel();
+
+    final _productlist = Provider.of<List<ProductModel>>(context, listen: false); 
+    
     if(widget.searchKey.isNotEmpty){
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) { 
-        _searchPageViewModel.queryStringfromCategory(widget.searchKey);
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        _searchPageViewModel.queryStringfromCategory(widget.searchKey, _productlist);
         _searchPageViewModel.searchFliedController.clear();
       });
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    Provider.of<SearchPageViewModel>(context, listen: false).searchFliedController.dispose();
   }
 
   @override
@@ -62,8 +70,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
   AppBar _buildSearchAppbar(){
 
+    final _categorylist = Provider.of<List<CategoryModel>>(context);
+    final _productlist = Provider.of<List<ProductModel>>(context, listen: false); 
     final _searchPageViewModel = Provider.of<SearchPageViewModel>(context);
-    _searchPageViewModel.setCategoryListStatus(_searchPageViewModel.getcategoryList);
 
     return AppBar(
       automaticallyImplyLeading: false,
@@ -88,12 +97,12 @@ class _SearchScreenState extends State<SearchScreen> {
                   isDense: true,
                   hintText: '輸入產品名稱',
                 ),
-                onChanged: (value) => _searchPageViewModel.queryfromString(value)
+                onChanged: (value) => _searchPageViewModel.queryfromString(value, _productlist)
               )
             ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.search)
+            const Padding(
+              padding: EdgeInsets.only(right: 15),
+              child: Icon(Icons.search),
             )
           ],
         ),
@@ -103,33 +112,32 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Container(
           height: 40,
           padding: const EdgeInsets.only(top: 5, bottom: 5),
-          child: _searchPageViewModel.categoryliststate == status.loading ?
+          // ignore: unnecessary_null_comparison
+          child: _categorylist == null ?
           const Center(child: CircularProgressIndicator()) :
-          _buildCategoryListView()
+          _buildCategoryListView(_categorylist, _productlist, _searchPageViewModel)
         ),
       )
     );
   }
 
-  Widget _buildCategoryListView(){
-
-    final _searchPageViewModel = Provider.of<SearchPageViewModel>(context);
-    List<CategoryModel> list = _searchPageViewModel.getcategoryList;
+  Widget _buildCategoryListView(List<CategoryModel> categorylist, List<ProductModel> productlist, SearchPageViewModel searchPageViewModel){
 
     // ignore: unnecessary_null_comparison
-    return ListView.builder(
-      itemCount: list.length,
+    return categorylist == null ? Container() :
+    ListView.builder(
+      itemCount: categorylist.length,
       physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, index) {
         return GestureDetector(
-          onTap: () => _searchPageViewModel.queryfromCategory(index),
-          child: list[index].quickSearch == false ? Container() :
+          onTap: () => searchPageViewModel.queryfromCategory(index, categorylist[index].name , productlist),
+          child: categorylist[index].quickSearch == false ? Container() :
           Container(
             margin: const EdgeInsets.only(left: 10),
             padding: const EdgeInsets.only(left: 20, right: 20),
             decoration: BoxDecoration(
-              color: index == _searchPageViewModel.categoryCurrentIndex ? const Color(cPrimaryColor) : Colors.transparent,
+              color: index == searchPageViewModel.categoryCurrentIndex ? const Color(cPrimaryColor) : Colors.transparent,
               border: Border.all(
                 width: 1.0,
                 color: const Color(cPrimaryColor)
@@ -138,8 +146,8 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             child: Center(
               child: Text(
-                list[index].name,
-                style: index == _searchPageViewModel.categoryCurrentIndex ?
+                categorylist[index].name,
+                style: index == searchPageViewModel.categoryCurrentIndex ?
                 const TextStyle(color: Colors.white) :
                 const TextStyle(color: Colors.grey),
               ),

@@ -9,7 +9,7 @@ class CategoryDatabase{
   //  取得所有貨品
   Stream<List<CategoryModel>> get getCategory {
     return _ref
-      .orderBy('CREATE_DATE' , descending: true)  
+      .orderBy('CREATE_DATE' , descending: false)  
       .snapshots()
       .map((list) => list.docs
       .map((doc) => CategoryModel.fromFirestore(doc.data()))

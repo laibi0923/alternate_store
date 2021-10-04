@@ -1,6 +1,5 @@
 
 // ignore_for_file: import_of_legacy_library_into_null_safe
-
 import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/model/product_model.dart';
 import 'package:alternate_store/viewmodel/cart_viewmodel.dart';
@@ -28,10 +27,11 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   void _show(BuildContext context, CartViewModel cartViewModel, WishlistViewModel wishlistViewModel) {
 
-    String colorName = '';
-    int currentSize = 0;
-    int currentColor = 0;
     final _productViewModel = Provider.of<ProductDetailsViewModel>(context, listen: false);
+    
+    int currentColor = 0;
+    String colorName = widget.productModel.color[0]['COLOR_NAME'];
+    int currentSize = 0;
 
     showModalBottomSheet(
       isScrollControlled: true,
@@ -308,6 +308,12 @@ class _ProductDetailsState extends State<ProductDetails> {
       )
     );
   }
+  
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProductDetailsViewModel>(context, listen: false).initProductDetails();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -315,9 +321,8 @@ class _ProductDetailsState extends State<ProductDetails> {
     final _cartviewmodel = Provider.of<CartViewModel>(context);
     final _wishlistviewmodel = Provider.of<WishlistViewModel>(context);
     final _productDetailsViewModel = Provider.of<ProductDetailsViewModel>(context);
-
     final wishlist = _wishlistviewmodel.getSharedPerferencesCartList;
-    _productDetailsViewModel.checkOnWishList(wishlist, widget.productModel.productNo);
+    _productDetailsViewModel.checkOnWishlist(wishlist, widget.productModel.productNo);
 
     return Scaffold(
       backgroundColor: Colors.white,

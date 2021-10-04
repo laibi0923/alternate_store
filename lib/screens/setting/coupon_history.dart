@@ -10,7 +10,7 @@ class CouponHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final userCoupon = Provider.of<List<UserCouponModel>>(context);
+    final _userCoupon = Provider.of<List<UserCouponModel>>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -29,43 +29,50 @@ class CouponHistory extends StatelessWidget {
           )
         ],
       ),
-      body: ListView.builder(
-        itemCount: userCoupon.length,
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        itemBuilder: (context, index){
-          return Container(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-            margin: const EdgeInsets.only(bottom: 20),
-            decoration: BoxDecoration(
-              color: const Color(cGrey),
-              borderRadius: BorderRadius.circular(7)
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Expanded(
-                      child: Text('使用日期 : ')
-                    ),
-                    Text(
-                      DateFormat('yyyy/MM/dd  kk:mm').format(DateTime.fromMicrosecondsSinceEpoch(userCoupon[index].date.microsecondsSinceEpoch))
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Expanded(
-                      child: Text('優惠碼 : ')
-                    ),
-                    Text(userCoupon[index].code, style: const TextStyle(fontWeight: FontWeight.bold),),
-                  ],
-                ),
-              ],
-            ),
-          );
-        }
+      body: Center(
+        child: _userCoupon.isEmpty ? 
+        const Text(
+          '尚未有任何紀錄',
+          style: TextStyle(color: Colors.grey),
+        ) :
+        ListView.builder(
+          itemCount: _userCoupon.length,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          itemBuilder: (context, index){
+            return Container(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+              margin: const EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: const Color(cGrey),
+                borderRadius: BorderRadius.circular(7)
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: Text('使用日期 : ')
+                      ),
+                      Text(
+                        DateFormat('yyyy/MM/dd  kk:mm').format(DateTime.fromMicrosecondsSinceEpoch(_userCoupon[index].date.microsecondsSinceEpoch))
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: Text('優惠碼 : ')
+                      ),
+                      Text(_userCoupon[index].code, style: const TextStyle(fontWeight: FontWeight.bold),),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }
+        ),
       )
     );
   }

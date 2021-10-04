@@ -85,7 +85,8 @@ class _ScreenWarpperState extends State<ScreenWarpper> {
             icon: Badge(
               position: const BadgePosition(bottom: -13),
               badgeColor: const Color(cPrimaryColor),
-              showBadge: AuthDatabase(authService.userUid).getUnReadMail(mailboxData) > 0 ? true : false,
+              showBadge: authService.isSignedIn == true &&
+              AuthDatabase(authService.userUid).getUnReadMail(mailboxData) > 0 ? true : false,
               badgeContent:  Text(((){
                 int unreadmail = AuthDatabase(authService.userUid).getUnReadMail(mailboxData);
                 if(unreadmail > 99) () => '99+';
