@@ -1,5 +1,6 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 //@dart=2.9
+import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 
@@ -12,7 +13,9 @@ import 'package:alternate_store/viewmodel/checkout_viewmodel.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:path_provider/path_provider.dart';
 // import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:provider/provider.dart';
 
@@ -59,6 +62,30 @@ class _CheckOutState extends State<CheckOut> {
     send.send([id, status, progress]);
   }
 
+  // 下載支付二維碼
+  Future<void> downloadQRCode(PaymentMethodModel paymentMethodModel) async {
+    try{
+      Directory directory = Platform.isAndroid ? 
+      await getExternalStorageDirectory() :
+      await getApplicationDocumentsDirectory();
+
+      print(directory.path);
+
+      String x = await FlutterDownloader.enqueue(
+        url: paymentMethodModel.qrImage,
+        savedDir: directory.path,
+        showNotification: true,
+        openFileFromNotification: true,
+      );
+
+      print(x);
+
+    } on PlatformException catch (e){
+      // ignore: avoid_print
+      print('Failed to pick image : $e');
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     
@@ -119,7 +146,9 @@ class _CheckOutState extends State<CheckOut> {
               decoration: BoxDecoration(
                   color: const Color(cGrey),
                   borderRadius: BorderRadius.circular(7)),
-              child: Text(
+              child: _userInfo == null ?
+              const Text('') :
+              Text(
                 _userInfo.unitAndBuilding.isEmpty &&
                 _userInfo.estate.isEmpty &&
                 _userInfo.district.isEmpty
@@ -196,7 +225,7 @@ class _CheckOutState extends State<CheckOut> {
 
         //  QR Code
         GestureDetector(
-          onTap: () => _checkoutviewmodel.downloadQRCode(_paymentMethodList[_initTagIndex]),
+          onTap: () => downloadQRCode(_paymentMethodList[_initTagIndex]),
           child: SizedBox(
             height: 250,
             child: setCachedNetworkImage(_paymentMethodList[_initTagIndex].qrImage, BoxFit.contain),
