@@ -83,6 +83,7 @@ class CheckoutViewModel extends ChangeNotifier{
 
   //  訂單資料
   Future<void> uploadpaymentButtonOnClick(BuildContext context, UserModel userInfo, OrderModel orderModel, String paymentMothed) async {
+    
     //  判斷送貨地址
     if (userInfo.unitAndBuilding.isEmpty &&
         userInfo.estate.isEmpty &&
@@ -101,45 +102,23 @@ class CheckoutViewModel extends ChangeNotifier{
         return;
       } else {
         showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return loadingIndicator();
-            });
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return loadingIndicator();
+          }
+        );
 
         final File imageFile = File(image.path);
         uploadImagepath = await ServicesX().uploadImage(
-            'payment/${ServicesX().randomStringGender(10, true).toUpperCase()}.jpg',
-            imageFile);
+          'payment/${ServicesX().randomStringGender(10, true).toUpperCase()}.jpg',
+          imageFile
+        );
       }
     } on PlatformException catch (e) {
       // ignore: avoid_print
       print('Failed to pick image : $e');
     }
-
-    // if (permissionStatus.isDenied) {
-    //   Permission.storage.shouldShowRequestRationale.then((value) async {
-    //     var requestresult = await Permission.storage.request();
-    //     if (value == false && requestresult.isPermanentlyDenied) {
-    //       bool result = await showDialog(
-    //           context: context,
-    //           builder: (BuildContext context) {
-    //             return const CustomizeDialog(
-    //               title: '存取檔案權限',
-    //               content: '尚未取得存取檔案權限，如想使用此功能可前往設定頁面設定。',
-    //               submitBtnText: '立即前往',
-    //               cancelBtnText: '取消',
-    //             );
-    //           });
-    //       if (result == true) {
-    //         openAppSettings();
-    //         return;
-    //       }
-    //     }
-    //   });
-
-    //   return;
-    // }
 
     //  收件人資料
     Map<String, dynamic> receipientInfo = {
