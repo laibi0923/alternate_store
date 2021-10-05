@@ -25,8 +25,18 @@ class ScreenWarpper extends StatefulWidget {
 class _ScreenWarpperState extends State<ScreenWarpper> {
 
   int _currentIndex = 0;
+  final PageController _pageController = PageController(initialPage: 0);
 
   void _bottomNavigatorBarItemOnClick(value){
+    setState(() {
+      if(value != _currentIndex){
+        _currentIndex = value;
+        _pageController.animateToPage(
+          value, duration: const Duration(milliseconds: 300),
+          curve: Curves.decelerate)
+        ;
+      }
+    });
     setState(() => value != _currentIndex ? _currentIndex = value : _currentIndex);
   }
 
@@ -48,8 +58,14 @@ class _ScreenWarpperState extends State<ScreenWarpper> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: PageView.builder(
+        controller: _pageController,
         physics: const BouncingScrollPhysics(),
         itemCount: pages.length,
+        onPageChanged: (index){
+          setState(() {
+            _currentIndex = index;
+          });
+        },
         itemBuilder: (context, index){
           return pages[index];
         }
