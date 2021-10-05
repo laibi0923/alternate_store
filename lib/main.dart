@@ -2,9 +2,6 @@
 // ignore_for_file: missing_required_param
 
 import 'package:alternate_store/constants.dart';
-import 'package:alternate_store/model/privatepolicy_model.dart';
-import 'package:alternate_store/model/returnpolicy_model.dart';
-import 'package:alternate_store/screens/setting/return_policy.dart';
 import 'package:alternate_store/screens/splash_page.dart';
 import 'package:alternate_store/service/auth_database.dart';
 import 'package:alternate_store/service/auth_services.dart';

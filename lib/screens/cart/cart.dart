@@ -136,7 +136,6 @@ class _CartState extends State<Cart> {
   Widget _buildItemView(int index){
 
     final _cartViewModel = Provider.of<CartViewModel>(context);
-    print(_cartViewModel.getCartList);
 
     return Slidable(
       key: Key(_cartViewModel.getCartList[index].productNo),
