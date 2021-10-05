@@ -76,7 +76,7 @@ class _CustomizeDialogState extends State<CustomizeDialog> {
                     )
                   )
                 ),
-                const VerticalDivider(color: Colors.grey,),
+                // const VerticalDivider(color: Colors.grey,),
                 Expanded(
                   child: TextButton(
                     onPressed: () => _cancelOnClick(),
