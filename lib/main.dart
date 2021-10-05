@@ -5,6 +5,7 @@ import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/screens/splash_page.dart';
 import 'package:alternate_store/service/auth_database.dart';
 import 'package:alternate_store/service/auth_services.dart';
+import 'package:alternate_store/service/banner_service.dart';
 import 'package:alternate_store/service/category_database.dart';
 import 'package:alternate_store/service/coupon_service.dart';
 import 'package:alternate_store/service/order_service.dart';
@@ -92,11 +93,15 @@ class MyApp extends StatelessWidget {
         ),
 
         StreamProvider.value(
-          value: PrivatePolicyService().getPrivatePolicyContent, 
+          value: PolicyService().getPrivatePolicyContent, 
         ),
 
         StreamProvider.value(
-          value: PrivatePolicyService().getReturnPolicyContent, 
+          value: PolicyService().getReturnPolicyContent, 
+        ),
+
+        StreamProvider.value(
+          value: BannerService().getBanner, 
         ),
 
         StreamProvider.value(
