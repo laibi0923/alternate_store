@@ -35,15 +35,15 @@ class _SettingState extends State<Setting> {
       backgroundColor: Colors.white,
       body: widget.signInStatus == false || widget.emailVerified == false ? 
       UserEntrance(popBack: false, emailVerifed: widget.emailVerified,) :
-      Padding(
+      Container(
         padding: const EdgeInsets.only(left: 30, right: 30),
-        child: userModel == null ? 
-        const Center(child: CircularProgressIndicator()) :
-        ListView(
+        child: ListView(
           physics: const BouncingScrollPhysics(),
           children: [
 
-            Padding(
+            userModel == null ? 
+            const Center(child: CircularProgressIndicator()) :
+            Container(
               padding: const EdgeInsets.only(top: 60, bottom: 40),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,6 +72,7 @@ class _SettingState extends State<Setting> {
                       ),
                     ),
                   )
+                
                 ],
               ),
             ),

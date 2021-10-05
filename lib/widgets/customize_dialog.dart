@@ -35,7 +35,7 @@ class _CustomizeDialogState extends State<CustomizeDialog> {
     );
   }
 
-  contebtBox() {
+  Widget contebtBox() {
     return Container(
       margin: const EdgeInsets.only(left: 25, right: 25),
       decoration: BoxDecoration(

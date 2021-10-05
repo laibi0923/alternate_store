@@ -39,7 +39,6 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void dispose() {
     super.dispose();
-    Provider.of<SearchPageViewModel>(context, listen: false).searchFliedController.dispose();
   }
 
   @override
