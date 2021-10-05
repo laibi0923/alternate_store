@@ -42,9 +42,16 @@ class _SettingState extends State<Setting> {
           children: [
 
             userModel == null ? 
-            Container() :
-            Container(
-              padding: const EdgeInsets.only(top: 60, bottom: 40),
+            const SizedBox(
+              height: 420,
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: Color(cPrimaryColor),
+                )
+              ),
+            ) :
+            SizedBox(
+              height: 420,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -226,6 +233,11 @@ class _SettingState extends State<Setting> {
       )
     
     );
+  }
+
+
+  Widget _buildUserProfile(){
+    return Container();
   }
 
 }

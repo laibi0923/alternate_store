@@ -33,8 +33,8 @@ class _ScreenWarpperState extends State<ScreenWarpper> {
   @override
   Widget build(BuildContext context) {
 
-    final authService = Provider.of<AuthService>(context);  
-    final mailboxData = Provider.of<List<MailBoxModel>>(context);
+    final _authService = Provider.of<AuthService>(context);  
+    final _mailboxData = Provider.of<List<MailBoxModel>>(context);
     final _cartViewModel = Provider.of<CartViewModel>(context);
 
     List pages = [
@@ -42,11 +42,18 @@ class _ScreenWarpperState extends State<ScreenWarpper> {
       const WishList(), 
       const Cart(), 
       const Mailbox(), 
-      Setting(signInStatus: authService.isSignedIn, emailVerified: authService.emailverify,)
+      Setting(signInStatus: _authService.isSignedIn, emailVerified: _authService.emailverify,)
     ];
 
     return Scaffold(
-      body: pages[_currentIndex],
+      backgroundColor: Colors.white,
+      body: PageView.builder(
+        physics: const BouncingScrollPhysics(),
+        itemCount: pages.length,
+        itemBuilder: (context, index){
+          return pages[index];
+        }
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         elevation: 0,
@@ -85,10 +92,10 @@ class _ScreenWarpperState extends State<ScreenWarpper> {
             icon: Badge(
               position: const BadgePosition(bottom: -13),
               badgeColor: const Color(cPrimaryColor),
-              showBadge: authService.isSignedIn == true &&
-              AuthDatabase(authService.userUid).getUnReadMail(mailboxData) > 0 ? true : false,
+              showBadge: _authService.isSignedIn == true &&
+              AuthDatabase(_authService.userUid).getUnReadMail(_mailboxData) > 0 ? true : false,
               badgeContent:  Text(((){
-                int unreadmail = AuthDatabase(authService.userUid).getUnReadMail(mailboxData);
+                int unreadmail = AuthDatabase(_authService.userUid).getUnReadMail(_mailboxData);
                 if(unreadmail > 99) () => '99+';
                 return unreadmail.toString();
               })(),

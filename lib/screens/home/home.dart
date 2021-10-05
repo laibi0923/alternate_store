@@ -1,11 +1,9 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe, unnecessary_null_comparison
-
 import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/model/banner_model.dart';
 import 'package:alternate_store/model/product_model.dart';
 import 'package:alternate_store/screens/product_details/product_details.dart';
 import 'package:alternate_store/screens/search_center/search_page.dart';
-import 'package:alternate_store/service/banner_service.dart';
 import 'package:alternate_store/viewmodel/homescreen_viewmodel.dart';
 import 'package:alternate_store/widgets/product_gridview.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';

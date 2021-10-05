@@ -31,7 +31,7 @@ Widget orderItemView(OrderModel orderModel){
                 Text(orderModel.orderNumber),
                 const Spacer(),
                 Text(orderModel.orderProduct.length.toString() + ' 件商品'),
-                Text('HKD\$ ' + orderModel.totalAmount.toString()),
+                Text('HKD\$ ' + orderModel.totalAmount.toStringAsFixed(2)),
               ],
             ),
           ),

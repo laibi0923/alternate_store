@@ -76,28 +76,28 @@ class _ReviewOrderState extends State<ReviewOrder> {
 
                 CartSummaryItemView(
                   title: '小計', 
-                  value: 'HKD\$ ${widget.orderModel.subAmount}', 
+                  value: 'HKD\$ ${widget.orderModel.subAmount.toStringAsFixed(2)}', 
                   isbold: false, 
                   showAddBox: false
                 ),
 
                 CartSummaryItemView(
                   title: widget.orderModel.discountCode.isEmpty ? '折扣' : '折扣代碼【${widget.orderModel.discountCode}】', 
-                  value: '-HKD\$ ${widget.orderModel.discountAmount}', 
+                  value: '-HKD\$ ${widget.orderModel.discountAmount.toStringAsFixed(2)}', 
                   isbold: false, 
                   showAddBox: false
                 ),
 
                 CartSummaryItemView(
                   title: '運費', 
-                  value: 'HKD\$ ${widget.orderModel.shippingAmount}', 
+                  value: 'HKD\$ ${widget.orderModel.shippingAmount.toStringAsFixed(2)}', 
                   isbold: false, 
                   showAddBox: false
                 ),
 
                 CartSummaryItemView(
                   title: '總計', 
-                  value: 'HKD\$ ${widget.orderModel.totalAmount}', 
+                  value: 'HKD\$ ${widget.orderModel.totalAmount.toStringAsFixed(2)}', 
                   isbold: true, 
                   showAddBox: false
                 ),

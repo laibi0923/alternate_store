@@ -124,7 +124,7 @@ class RefundHistory extends StatelessWidget {
 
                   // Product Color
                   Text(
-                    '${orderProductModel.colorName}} / ',
+                    '${orderProductModel.colorName} / ',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
 
@@ -140,40 +140,6 @@ class RefundHistory extends StatelessWidget {
                     '已退出貨品',
                     style: TextStyle(color: Colors.redAccent),
                   ),
-
-
-                  // Prouct Price
-                  // Expanded(
-                  //   child: Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.end,
-                  //     children:  [
-                        
-                  //       // 判斷如商品冇特價時不顯示, 相反則顥示正價 (刪除線)
-                  //       productList['DISCOUNT'] == 0 ? Container() :
-                  //       Text(
-                  //         'HKD\$ ' + productList['PRICE'].toStringAsFixed(2),
-                  //         style: const TextStyle(
-                  //           fontSize: xTextSize11,
-                  //           decoration: TextDecoration.lineThrough
-                  //         ),
-                  //       ),
-                        
-                  //       //  判斷如商品冇特價時顯示正價, 相反以紅色顯示特價銀碼
-                  //       productList['DISCOUNT'] != 0 ?
-                  //       Text(
-                  //         'HKD\$ ' + productList['DISCOUNT'].toStringAsFixed(2),
-                  //         style: const TextStyle(
-                  //           fontSize: xTextSize14,
-                  //           color: Color(cPink)
-                  //         ),
-                  //       ) :
-                  //       Text(
-                  //         'HKD\$ ' + productList['PRICE'].toStringAsFixed(2),
-                  //       )
-                
-                  //     ],
-                  //   ),
-                  // ),
 
                 ],
               ),

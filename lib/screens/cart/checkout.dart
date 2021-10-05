@@ -190,7 +190,7 @@ class _CheckOutState extends State<CheckOut> {
         //  Total payment amount
         Center(
             child: Text(
-          'HKD\$ ${widget.orderModel.totalAmount}',
+          'HKD\$ ${widget.orderModel.totalAmount.toStringAsFixed(2)}',
           style: const TextStyle(
               fontSize: xTextSize18, fontWeight: FontWeight.bold),
         )),
