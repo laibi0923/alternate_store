@@ -164,6 +164,7 @@ class CartViewModel extends ChangeNotifier {
   clearCart() {
     _sharedPreferencesCartList.clear();
     _setSharedPreferences();
+    _cartList.clear();
     notifyListeners();
   }
 
@@ -186,6 +187,7 @@ class CartViewModel extends ChangeNotifier {
 
   //  結帳
   void checkbill(bool isLoggedIn){
+
     //  1. 重新將 Cart 內物品資料整理
     List<Map<String, dynamic>> tempProductList = [];
 
@@ -217,13 +219,6 @@ class CartViewModel extends ChangeNotifier {
           discountCode, 
           discountAmount, 
           {},
-          // {
-          //   'UNIT' : userModel.unitAndBuilding,
-          //   'BUILDING' : userModel.estate,
-          //   'DISTRICT' : userModel.district,
-          //   'CONTACT' : userModel.contactNo,
-          //   'RECIPIENT_NAME' : userModel.recipientName
-          // }, 
           tempProductList,
           '',
           ''

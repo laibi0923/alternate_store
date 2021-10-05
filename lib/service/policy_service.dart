@@ -10,7 +10,7 @@ class PolicyService{
   //  取得用戶政策
   Stream<PrivatePolicyModel> get getPrivatePolicyContent{
     return _mFirestore
-    .collection('setting')
+    .collection('policy')
     .doc('private_policy')
     .snapshots()
     .map((list) => PrivatePolicyModel.fromFirestore(list.data()));
@@ -19,7 +19,7 @@ class PolicyService{
   //  取得退貨政策
   Stream<ReturnPolicyModel> get getReturnPolicyContent{
     return _mFirestore
-    .collection('setting')
+    .collection('policy')
     .doc('return_policy')
     .snapshots()
     .map((list) => ReturnPolicyModel.fromFirestore(list.data()));
