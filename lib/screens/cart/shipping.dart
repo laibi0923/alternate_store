@@ -1,4 +1,5 @@
 // @dart=2.9
+import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/model/user_model.dart';
 import 'package:alternate_store/service/auth_database.dart';
 import 'package:alternate_store/widgets/custom_snackbar.dart';
@@ -8,8 +9,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../constants.dart';
 
 class Shipping extends StatefulWidget {
   const Shipping({ key }) : super(key: key);
