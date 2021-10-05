@@ -42,7 +42,7 @@ class _SettingState extends State<Setting> {
           children: [
 
             userModel == null ? 
-            const Center(child: CircularProgressIndicator()) :
+            Container() :
             Container(
               padding: const EdgeInsets.only(top: 60, bottom: 40),
               child: Column(

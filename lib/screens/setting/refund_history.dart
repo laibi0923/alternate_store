@@ -32,10 +32,14 @@ class RefundHistory extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: orderHistoryList.isEmpty ? 
-        const Text(
-          '尚未有任何退貨紀錄',
-          style: TextStyle(color: Colors.grey),
+        // ignore: unnecessary_null_comparison
+        child: orderHistoryList == null ? const Center(child: CircularProgressIndicator()):
+        orderHistoryList.isEmpty ? 
+        const Center(
+          child: Text(
+            '尚未有任何退貨紀錄',
+            style: TextStyle(color: Colors.grey),
+          ),
         ) :
         ListView.builder(
             physics: const BouncingScrollPhysics(),

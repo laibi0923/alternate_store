@@ -12,8 +12,7 @@ import 'package:alternate_store/widgets/customize_dialog.dart';import 'package:a
 class ShippingHistory extends StatelessWidget {
   const ShippingHistory({ Key? key }) : super(key: key);
 
-  Future<void> _requestRefund(
-    BuildContext context, String uid, OrderModel orderModel, int index) async {
+  Future<void> _requestRefund(BuildContext context, String uid, OrderModel orderModel, int index) async {
 
     if(orderModel.orderProduct[index]['REFUND_ABLE'] == false){
       return;
@@ -52,8 +51,6 @@ class ShippingHistory extends StatelessWidget {
 
     final userInfo = Provider.of<UserModel>(context);
     final orderHistoryList = Provider.of<List<OrderModel>>(context);
-    // ignore: unnecessary_null_comparison
-    if(orderHistoryList == null) {return Container();}
     
     return Scaffold(
       backgroundColor: Colors.white,
@@ -72,38 +69,40 @@ class ShippingHistory extends StatelessWidget {
           )
         ],
       ),
-      body: Center(
-        child: orderHistoryList.isEmpty ? 
-        const Text(
+      // ignore: unnecessary_null_comparison
+      body: orderHistoryList == null ? const Center(child: CircularProgressIndicator()) :
+      orderHistoryList.isEmpty ? 
+      const Center(
+        child: Text(
           '尚未有任何出貨紀錄',
           style: TextStyle(color: Colors.grey),
-        ) :
-        ListView.builder(
-          physics: const BouncingScrollPhysics(),
-          itemCount: orderHistoryList.length,
-          itemBuilder: (context, index){
-            return ListView.builder(
-              itemCount: orderHistoryList[index].orderProduct.length,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              itemBuilder: (context, zindex){
-                return GestureDetector(
-                  onTap: () => _requestRefund(
-                    context, 
-                    userInfo.uid, 
-                    orderHistoryList[index],
-                    zindex
-                  ),
-                  child: shippedProductView(
-                    orderHistoryList[index].orderProduct[zindex],
-                    orderHistoryList[index].orderNumber
-                  ),
-                );
-              }
-            );
-          }
         ),
+      ) :
+      ListView.builder(
+        physics: const BouncingScrollPhysics(),
+        itemCount: orderHistoryList.length,
+        itemBuilder: (context, index){
+          return ListView.builder(
+            itemCount: orderHistoryList[index].orderProduct.length,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            itemBuilder: (context, zindex){
+              return GestureDetector(
+                onTap: () => _requestRefund(
+                  context, 
+                  userInfo.uid, 
+                  orderHistoryList[index],
+                  zindex
+                ),
+                child: shippedProductView(
+                  orderHistoryList[index].orderProduct[zindex],
+                  orderHistoryList[index].orderNumber
+                ),
+              );
+            }
+          );
+        }
       ),
     );
   }
