@@ -1,7 +1,5 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 //@dart=2.9
-import 'dart:io';
-import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:alternate_store/constants.dart';
@@ -10,13 +8,9 @@ import 'package:alternate_store/model/paymentmethod_model.dart';
 import 'package:alternate_store/model/user_model.dart';
 import 'package:alternate_store/screens/cart/shipping.dart';
 import 'package:alternate_store/viewmodel/checkout_viewmodel.dart';
-import 'package:alternate_store/widgets/customize_dialog.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:gallery_saver/gallery_saver.dart';
-import 'package:path_provider/path_provider.dart';
 // import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:provider/provider.dart';
 

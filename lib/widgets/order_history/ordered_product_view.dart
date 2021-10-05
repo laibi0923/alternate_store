@@ -1,4 +1,5 @@
 // @dart=2.9
+import 'package:alternate_store/model/order_product_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:alternate_store/constants.dart';
@@ -6,6 +7,8 @@ import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 
 
 Widget orderedProductView(Map<String, dynamic> orderProductData){
+
+  OrderProductModel orderProductModel = OrderProductModel.fromFirestore(orderProductData);
 
   return Container(
     height: 150,
@@ -25,10 +28,11 @@ Widget orderedProductView(Map<String, dynamic> orderProductData){
           margin: const EdgeInsets.only(right: 20),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: setCachedNetworkImage(orderProductData['COLOR']['COLOR_IMAGE'], BoxFit.cover)
+            child: setCachedNetworkImage(orderProductModel.productImage, BoxFit.cover)
           ),
         ),
         
+        //  Product Details
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +42,7 @@ Widget orderedProductView(Map<String, dynamic> orderProductData){
               Padding(
                 padding: const EdgeInsets.only(bottom: 5),
                 child: Text(
-                  orderProductData['PRODUCT_NAME'],
+                  orderProductModel.productName,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   style: const TextStyle(fontWeight: FontWeight.bold),
@@ -48,7 +52,7 @@ Widget orderedProductView(Map<String, dynamic> orderProductData){
               const Spacer(),
 
               //  Refundable
-              orderProductData['REFUND_ABLE'] == false ? Container() :
+              orderProductModel.refundAble == false ? Container():
               const Align(
                 alignment: Alignment.centerRight,
                 child: Text(
@@ -64,13 +68,13 @@ Widget orderedProductView(Map<String, dynamic> orderProductData){
                   
                   //  Product Color
                   Text(
-                    '${orderProductData['COLOR']['COLOR_NAME']} / ',
+                    '${orderProductModel.colorName} / ',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
 
                   //  Product Size
                   Text(
-                    orderProductData['SIZE'],
+                    orderProductModel.size,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
 
@@ -81,9 +85,9 @@ Widget orderedProductView(Map<String, dynamic> orderProductData){
                       children:  [
                         
                         // 判斷如商品冇特價時不顯示, 相反則顥示正價 (刪除線)
-                        orderProductData['DISCOUNT'] == 0 ? Container() :
+                        orderProductModel.discount == 0 ? Container() :
                         Text(
-                          'HKD\$ ' + orderProductData['PRICE'].toStringAsFixed(2),
+                          'HKD\$ ' + orderProductModel.price.toStringAsFixed(2),
                           style: const TextStyle(
                             fontSize: xTextSize11,
                             decoration: TextDecoration.lineThrough
@@ -91,16 +95,16 @@ Widget orderedProductView(Map<String, dynamic> orderProductData){
                         ),
                         
                         //  判斷如商品冇特價時顯示正價, 相反以紅色顯示特價銀碼
-                        orderProductData['DISCOUNT'] != 0 ?
+                        orderProductModel.discount != 0 ?
                         Text(
-                          'HKD\$ ' + orderProductData['DISCOUNT'].toStringAsFixed(2),
+                          'HKD\$ ' + orderProductModel.discount.toStringAsFixed(2),
                           style: const TextStyle(
                             fontSize: xTextSize14,
                             color: Color(cPink)
                           ),
                         ) :
                         Text(
-                          'HKD\$ ' + orderProductData['PRICE'].toStringAsFixed(2),
+                          'HKD\$ ' + orderProductModel.price.toStringAsFixed(2),
                         )
                 
                       ],

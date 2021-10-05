@@ -1,5 +1,6 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 
+import 'package:alternate_store/model/order_product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:alternate_store/constants.dart';
@@ -51,10 +52,13 @@ class RefundHistory extends StatelessWidget {
                 shrinkWrap: true,
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 itemBuilder: (context, zindex){
-                  return orderHistoryList[index].orderProduct[zindex]['REFUND_STATUS'] != '已退貨' ?  Container() :
+
+                  OrderProductModel _orderProductModel = OrderProductModel.fromFirestore(orderHistoryList[index].orderProduct[zindex]);
+
+                  return _orderProductModel.refundStatus != '已退貨' ?  Container() :
                   _buildRefundItem(
                     orderHistoryList[index],
-                    orderHistoryList[index].orderProduct[zindex]
+                    _orderProductModel
                   );
                 }
               );
@@ -64,7 +68,7 @@ class RefundHistory extends StatelessWidget {
     );
   }
 
-  Widget _buildRefundItem(OrderModel orderModel, dynamic productList){
+  Widget _buildRefundItem(OrderModel orderModel, OrderProductModel orderProductModel){
     return Container(
       padding: const EdgeInsets.only(left: 20, right: 20, top:20, bottom: 20),
       decoration: BoxDecoration(
@@ -79,7 +83,10 @@ class RefundHistory extends StatelessWidget {
             margin: const EdgeInsets.only(right: 20),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: setCachedNetworkImage(productList['COLOR']['COLOR_IMAGE'], BoxFit.cover)
+              child: setCachedNetworkImage(
+                orderProductModel.colorImage, 
+                BoxFit.cover
+              )
             ),
           ),
           Expanded(
@@ -104,7 +111,7 @@ class RefundHistory extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 5),
                     child: Text(
-                      productList['PRODUCT_NAME'],
+                      orderProductModel.productName,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: const TextStyle(fontWeight: FontWeight.bold),
@@ -117,14 +124,14 @@ class RefundHistory extends StatelessWidget {
 
                   // Product Color
                   Text(
-                    '${productList['COLOR']['COLOR_NAME']} / ',
+                    '${orderProductModel.colorName}} / ',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
 
                   //  Product Size
                   Expanded(
                     child: Text(
-                      productList['SIZE'],
+                      orderProductModel.size,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
