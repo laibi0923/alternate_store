@@ -15,9 +15,6 @@ class ReviewOrder extends StatefulWidget {
 
 class _ReviewOrderState extends State<ReviewOrder> {
 
-  //  Dummy Data
-  final List dummyCartList = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,5 +1,6 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 
+import 'package:alternate_store/model/order_product_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -54,9 +55,9 @@ class CartViewModel extends ChangeNotifier {
     return _sharedPreferencesCartList;
   }
 
+
    //  取得購物車內貨品資料
   void setCatList(List<ProductModel> productlist){
-
     _cartList.clear();
     subAmount = 0.0;
     discountCode = '';
@@ -79,6 +80,7 @@ class CartViewModel extends ChangeNotifier {
   List<ProductModel> get getCartList{
     return _cartList;
   }
+
 
   SlidableController get slidableController{
     return _slidableController;
@@ -200,7 +202,8 @@ class CartViewModel extends ChangeNotifier {
         'PRICE' : _cartList[k].price,
         'DISCOUNT' : _cartList[k].discountPrice,
         'SIZE' : _cartList[k].size[_sharedPreferencesCartList[k].size],
-        'COLOR' : _cartList[k].color[_sharedPreferencesCartList[k].color],
+        'COLOR_IMAGE' : _cartList[k].color[_sharedPreferencesCartList[k].color]['COLOR_IMAGE'],
+        'COLOR_NAME' : _cartList[k].color[_sharedPreferencesCartList[k].color]['COLOR_NAME'],
         'SHIPPING_STATUS' : '',
         'REFUND_STATUS' : ''
       });
