@@ -7,7 +7,6 @@ import 'package:alternate_store/model/order_model.dart';
 import 'package:alternate_store/model/paymentmethod_model.dart';
 import 'package:alternate_store/model/user_model.dart';
 import 'package:alternate_store/screens/cart/shipping.dart';
-import 'package:alternate_store/screens/payment_gateway/stripe_cardfrom.dart';
 import 'package:alternate_store/screens/payment_gateway/stripe_payment.dart';
 import 'package:alternate_store/viewmodel/checkout_viewmodel.dart';
 import 'package:alternate_store/widgets/customize_button.dart';
@@ -67,6 +66,8 @@ class _CheckOutState extends State<CheckOut> {
                 ),
               ),
 
+              _buildCardIcon(),
+
               //  Total payment amount
               Padding(
                 padding: const EdgeInsets.only(bottom: 20, top: 20),
@@ -109,6 +110,24 @@ class _CheckOutState extends State<CheckOut> {
       ),
     );
   }
+
+  
+  Widget _buildCardIcon(){
+    return Row(
+      children: [
+        Container(
+          height: 50,
+          margin: const EdgeInsets.only(top: 0, left: 20),
+          child: setCachedNetworkImage(
+            'https://logodix.com/logo/797210.png',
+            BoxFit.cover
+          ),
+        )
+      ],
+    );
+  }
+
+
 
   Widget _buildShippingInformation() {
 
