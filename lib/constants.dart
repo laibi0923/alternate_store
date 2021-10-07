@@ -5,7 +5,8 @@ const cDark = 0xFF5B5E61;
 const cPink = 0xFFFFB4B4;
 
 
-const double xTextSize22 = 26;
+const double xTextSize26 = 26;
+const double xTextSize22 = 22;
 const double xTextSize18 = 18;
 const double xTextSize16 = 16;
 const double xTextSize14 = 14;

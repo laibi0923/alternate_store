@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:alternate_store/constants.dart';
 
-Widget customizeButton1(String title, void onClick){
+Widget customizeButton(String title, void onClick){
   return ElevatedButton(
     style: ElevatedButton.styleFrom(
       primary: const Color(cPrimaryColor),

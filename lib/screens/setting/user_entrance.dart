@@ -83,7 +83,7 @@ class _UserEntranceState extends State<UserEntrance> with TickerProviderStateMix
                   Text(
                     storeName,
                     style: GoogleFonts.alata(
-                      fontSize: xTextSize22,
+                      fontSize: xTextSize26,
                       fontWeight: FontWeight.bold,
                     ),
                   )

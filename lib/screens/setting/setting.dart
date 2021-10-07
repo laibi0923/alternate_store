@@ -87,6 +87,7 @@ class _SettingState extends State<Setting> {
           ),
 
           //  Change User Info Button
+          userModel == null ? Container() :
           GestureDetector(
             onTap: () => _settingviewmodel.userInfoSetting(),
             child: settingInfo(userModel.name.toUpperCase()),

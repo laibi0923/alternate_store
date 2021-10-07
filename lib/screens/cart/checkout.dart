@@ -7,7 +7,10 @@ import 'package:alternate_store/model/order_model.dart';
 import 'package:alternate_store/model/paymentmethod_model.dart';
 import 'package:alternate_store/model/user_model.dart';
 import 'package:alternate_store/screens/cart/shipping.dart';
+import 'package:alternate_store/screens/payment_gateway/stripe_cardfrom.dart';
+import 'package:alternate_store/screens/payment_gateway/stripe_payment.dart';
 import 'package:alternate_store/viewmodel/checkout_viewmodel.dart';
+import 'package:alternate_store/widgets/customize_button.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,30 +37,74 @@ class _CheckOutState extends State<CheckOut> {
       body: Stack(
         children: [
 
-          Container(
-            color: Colors.white,
-            child: ListView(
-              physics: const BouncingScrollPhysics(),
-              children: [
-                _buildShippingInformation(),
-                _buildPaymentMehtod(),
-              ],
-            ),
+          ListView(
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
+            children: [
+
+              _buildShippingInformation(),
+
+              //  Title
+              Padding(
+                padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: const [
+                    Text(
+                      '付款資料',
+                      style: TextStyle(
+                        fontSize: xTextSize26, 
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    Text(
+                      '  (信用卡 / 借記卡)',
+                      style: TextStyle(
+                    fontSize: xTextSize18, 
+                  ),
+                    )
+                  ],
+                ),
+              ),
+
+              //  Total payment amount
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20, top: 20),
+                child: Text(
+                '付款總額\nHKD\$ ${widget.orderModel.totalAmount.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: xTextSize18, 
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center
+                ),
+              ),
+
+              const StripePayment(),
+              // _buildPaymentMehtod(),
+
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 100),
+                child: customizeButton('提交訂單', (){}),
+              )
+            ],
           ),
 
           //  關閉按鈕
           Positioned(
-              top: 60,
-              right: 30,
-              child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(99)),
-                    child: const Icon(Icons.close)),
-              )),
+            top: 60,
+            right: 30,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(99)),
+              child: const Icon(Icons.close)),
+            )
+          ),
+
         ],
       ),
     );
@@ -68,7 +115,7 @@ class _CheckOutState extends State<CheckOut> {
     final _userInfo = Provider.of<UserModel>(context);
 
     return Padding(
-      padding: const EdgeInsets.only(left: 30, right: 30),
+      padding: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -76,7 +123,7 @@ class _CheckOutState extends State<CheckOut> {
             padding: EdgeInsets.only(top: 40, bottom: 20),
             child: Text(
               '運送地址',
-              style: TextStyle(fontSize: xTextSize22, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: xTextSize26, fontWeight: FontWeight.bold),
             ),
           ),
           GestureDetector(
@@ -101,7 +148,14 @@ class _CheckOutState extends State<CheckOut> {
               ),
             ),
           ),
-          const Align(alignment: Alignment.centerRight, child: Text('修改')),
+          Row(
+            children: const [
+              Expanded(
+                child: Text('預計送貨時間約 7-11 天')
+              ),
+              Text('修改地址'),
+            ],
+          ),
         ],
       ),
     );
@@ -123,7 +177,7 @@ class _CheckOutState extends State<CheckOut> {
           child: Text(
             '支付方式',
             style:
-                TextStyle(fontSize: xTextSize22, fontWeight: FontWeight.bold),
+                TextStyle(fontSize: xTextSize26, fontWeight: FontWeight.bold),
           ),
         ),
 

@@ -33,7 +33,7 @@ class ThankYouScreen extends StatelessWidget {
 
             Text(
               'THANK YOU',
-              style: TextStyle(fontSize: xTextSize22, color: Colors.grey, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: xTextSize26, color: Colors.grey, fontWeight: FontWeight.bold),
             ),
 
             Padding(

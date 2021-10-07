@@ -7,7 +7,7 @@ Widget settingInfo(String username){
       children: [
         Text(
           username,
-          style: const TextStyle(fontSize: xTextSize22),
+          style: const TextStyle(fontSize: xTextSize26),
         ),
         const Text(
           '編輯你的個人資料',

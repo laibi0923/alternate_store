@@ -50,6 +50,7 @@ dependencies:
   google_fonts:
   path_provider:
   gallery_saver:
+  stripe_sdk:
 
 dev_dependencies:
   flutter_test:

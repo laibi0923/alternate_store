@@ -83,7 +83,7 @@ class _ShippingState extends State<Shipping> {
                   const Expanded(
                     child: Text(
                       '運送地址',
-                      style: TextStyle(fontSize: xTextSize22, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: xTextSize26, fontWeight: FontWeight.bold),
                     ),
                   ),
                   GestureDetector(

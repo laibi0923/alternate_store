@@ -96,7 +96,7 @@ class _UserInformationState extends State<UserInformation> {
                           child: Text(
                             '個人資料',
                             style: TextStyle(
-                                fontSize: xTextSize22,
+                                fontSize: xTextSize26,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -132,7 +132,7 @@ class _UserInformationState extends State<UserInformation> {
                     child: Text(
                       '送貨地址',
                       style: TextStyle(
-                          fontSize: xTextSize22, fontWeight: FontWeight.bold),
+                          fontSize: xTextSize26, fontWeight: FontWeight.bold),
                     ),
                   ),
                   CustomizeTextField(
