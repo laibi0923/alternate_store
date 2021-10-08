@@ -7,7 +7,7 @@ import 'package:alternate_store/model/order_model.dart';
 import 'package:alternate_store/model/paymentmethod_model.dart';
 import 'package:alternate_store/model/user_model.dart';
 import 'package:alternate_store/screens/cart/shipping.dart';
-import 'package:alternate_store/screens/payment_gateway/stripe_payment.dart';
+import 'package:alternate_store/screens/payment_gateway/stripe_paymentcardform.dart';
 import 'package:alternate_store/viewmodel/checkout_viewmodel.dart';
 import 'package:alternate_store/widgets/customize_button.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
@@ -15,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:provider/provider.dart';
+import 'package:stripe_payment/stripe_payment.dart';
 
 class CheckOut extends StatefulWidget {
   final OrderModel orderModel;
@@ -27,10 +28,42 @@ class CheckOut extends StatefulWidget {
 class _CheckOutState extends State<CheckOut> {
 
   int _initTagIndex = 0;
-  
+
+  @override
+  void initState() {
+    super.initState();
+    StripePayment.setOptions(
+      StripeOptions(
+        publishableKey: 'pk_test_51JiJNYDvGyhPlIEQt8gch6PLzaodjqzalsJ2Ebz9wu6GZus41QVnJj5MVqFFafN4C4PZn6WgEgzna6NqydMnOMae00sIMH2FDj',
+      )
+    );
+  }
+
+  Future<void> startPayment() async {
+    StripePayment.setStripeAccount(null);
+
+    int amount = (10 * 100).toInt();
+
+    PaymentMethod paymentMethod = PaymentMethod();
+    paymentMethod = await StripePayment.paymentRequestWithCardForm(
+      CardFormPaymentRequest(),
+    ).then((value) {
+      return paymentMethod;
+    }).catchError((e){
+      print(e);
+    });
+    startDirectCharge(paymentMethod);
+  }
+
+  void startDirectCharge(PaymentMethod paymentMethod){
+    
+    print("Payment charge started");
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -81,7 +114,7 @@ class _CheckOutState extends State<CheckOut> {
                 ),
               ),
 
-              const StripePayment(),
+              const StripePaymentCardForm(),
               // _buildPaymentMehtod(),
 
               Padding(
@@ -126,8 +159,6 @@ class _CheckOutState extends State<CheckOut> {
       ],
     );
   }
-
-
 
   Widget _buildShippingInformation() {
 

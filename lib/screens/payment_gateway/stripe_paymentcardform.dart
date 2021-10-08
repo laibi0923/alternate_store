@@ -2,19 +2,17 @@ import 'dart:math';
 
 import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/screens/payment_gateway/stripe_viewmodel.dart';
-import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:stripe_sdk/stripe_sdk_ui.dart';
 
-class StripePayment extends StatefulWidget {
-  const StripePayment({ Key? key }) : super(key: key);
+class StripePaymentCardForm extends StatefulWidget {
+  const StripePaymentCardForm({ Key? key }) : super(key: key);
 
   @override
-  _StripePaymentState createState() => _StripePaymentState();
+  _StripePaymentCardFormState createState() => _StripePaymentCardFormState();
 }
 
-class _StripePaymentState extends State<StripePayment> with SingleTickerProviderStateMixin {
+class _StripePaymentCardFormState extends State<StripePaymentCardForm> with SingleTickerProviderStateMixin {
 
   final formKey = GlobalKey<FormState>();
 
