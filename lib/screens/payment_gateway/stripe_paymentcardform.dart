@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/screens/payment_gateway/stripe_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +42,6 @@ class _StripePaymentCardFormState extends State<StripePaymentCardForm> with Sing
   void dispose() {
 
     _animationController.dispose();
-
     _cardNumberController.dispose();
     _cardExpDateController.dispose();
     _cardCVCController.dispose();

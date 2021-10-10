@@ -1,7 +1,10 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
-//@dart=2.9
+import 'dart:convert';
 import 'dart:ui';
 
+import 'package:alternate_store/widgets/custom_snackbar.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:http/http.dart' as http;
 import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/model/order_model.dart';
 import 'package:alternate_store/model/paymentmethod_model.dart';
@@ -13,13 +16,11 @@ import 'package:alternate_store/widgets/customize_button.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:provider/provider.dart';
-import 'package:stripe_payment/stripe_payment.dart';
 
 class CheckOut extends StatefulWidget {
-  final OrderModel orderModel;
-  const CheckOut({Key key, this.orderModel}) : super(key: key);
+  final OrderModel? orderModel;
+  const CheckOut({Key? key, this.orderModel}) : super(key: key);
 
   @override
   State<CheckOut> createState() => _CheckOutState();
@@ -29,36 +30,51 @@ class _CheckOutState extends State<CheckOut> {
 
   int _initTagIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    StripePayment.setOptions(
-      StripeOptions(
-        publishableKey: 'pk_test_51JiJNYDvGyhPlIEQt8gch6PLzaodjqzalsJ2Ebz9wu6GZus41QVnJj5MVqFFafN4C4PZn6WgEgzna6NqydMnOMae00sIMH2FDj',
-      )
-    );
-  }
+  Map<String, dynamic>? paymentIntentData;
 
   Future<void> startPayment() async {
-    StripePayment.setStripeAccount(null);
 
-    int amount = (10 * 100).toInt();
+    print('>>>> Start Payment');
 
-    PaymentMethod paymentMethod = PaymentMethod();
-    paymentMethod = await StripePayment.paymentRequestWithCardForm(
-      CardFormPaymentRequest(),
-    ).then((value) {
-      return paymentMethod;
-    }).catchError((e){
-      print(e);
-    });
-    startDirectCharge(paymentMethod);
+
+    final url = Uri.parse('https://us-central1-alternate-store.cloudfunctions.net/stripePayment');
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    );
+
+    paymentIntentData = json.decode(response.body);
+
+    await Stripe.instance.initPaymentSheet(
+      paymentSheetParameters: SetupPaymentSheetParameters(
+        paymentIntentClientSecret: paymentIntentData!['paymentIntent'],
+        applePay: false,
+        googlePay: false,
+        style: ThemeMode.system,
+        merchantCountryCode: 'UK',
+        merchantDisplayName: 'xxxxx'
+      )
+    );
+    setState(() {});
+
+    displayPaymentSheet();
+
   }
 
-  void startDirectCharge(PaymentMethod paymentMethod){
-    
-    print("Payment charge started");
-
+  Future<void> displayPaymentSheet() async {
+    print('>>>>>> Display playment sheet');
+    try{
+      await Stripe.instance.presentPaymentSheet();
+      setState(() {
+        paymentIntentData = null;
+      });
+      CustomSnackBar().show(context, 'Paid Successfully');
+    } catch(e){
+      print(e);
+    }
   }
 
   @override
@@ -105,7 +121,7 @@ class _CheckOutState extends State<CheckOut> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20, top: 20),
                 child: Text(
-                '付款總額\nHKD\$ ${widget.orderModel.totalAmount.toStringAsFixed(2)}',
+                '付款總額\nHKD\$ ${widget.orderModel?.totalAmount.toStringAsFixed(2)}',
                   style: const TextStyle(
                     fontSize: xTextSize18, 
                     fontWeight: FontWeight.bold,
@@ -117,10 +133,17 @@ class _CheckOutState extends State<CheckOut> {
               const StripePaymentCardForm(),
               // _buildPaymentMehtod(),
 
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 100),
-                child: customizeButton('提交訂單', (){}),
+              ElevatedButton(
+                onPressed: (){
+                  startPayment();
+                }, 
+                child: Text('testing payment button')
               )
+
+              // Padding(
+              //   padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 100),
+              //   child: customizeButton('提交訂單', startPayment()),
+              // )
             ],
           ),
 
@@ -143,7 +166,6 @@ class _CheckOutState extends State<CheckOut> {
       ),
     );
   }
-
   
   Widget _buildCardIcon(){
     return Row(
@@ -184,6 +206,7 @@ class _CheckOutState extends State<CheckOut> {
                 color: const Color(cGrey),
                 borderRadius: BorderRadius.circular(7)
               ),
+              // ignore: unnecessary_null_comparison
               child: _userInfo == null ?
               const Text('') :
               _userInfo.unitAndBuilding.isEmpty &&
@@ -294,7 +317,7 @@ class _CheckOutState extends State<CheckOut> {
         //  Total payment amount
         Center(
             child: Text(
-          'HKD\$ ${widget.orderModel.totalAmount.toStringAsFixed(2)}',
+          'HKD\$ ${widget.orderModel?.totalAmount.toStringAsFixed(2)}',
           style: const TextStyle(
               fontSize: xTextSize18, fontWeight: FontWeight.bold),
         )),

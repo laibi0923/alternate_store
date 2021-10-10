@@ -51,8 +51,8 @@ dependencies:
   path_provider:
   gallery_saver:
   http:
-  stripe_payment:
   mask_text_input_formatter:
+  flutter_stripe:
   
 
 dev_dependencies:
