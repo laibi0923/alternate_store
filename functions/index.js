@@ -23,4 +23,5 @@ exports.stripePayment = functions.https.onRequest(async (req, res) => {
             })
         }
     })
+    
 })

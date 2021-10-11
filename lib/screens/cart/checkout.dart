@@ -10,9 +10,8 @@ import 'package:alternate_store/model/order_model.dart';
 import 'package:alternate_store/model/paymentmethod_model.dart';
 import 'package:alternate_store/model/user_model.dart';
 import 'package:alternate_store/screens/cart/shipping.dart';
-import 'package:alternate_store/screens/payment_gateway/stripe_paymentcardform.dart';
+import 'package:alternate_store/screens/payment_gateway/stripe_cardform.dart';
 import 'package:alternate_store/viewmodel/checkout_viewmodel.dart';
-import 'package:alternate_store/widgets/customize_button.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,52 +28,76 @@ class CheckOut extends StatefulWidget {
 class _CheckOutState extends State<CheckOut> {
 
   int _initTagIndex = 0;
-
-  Map<String, dynamic>? paymentIntentData;
-
-  Future<void> startPayment() async {
-
-    print('>>>> Start Payment');
+  final kApiUrl = 'https://us-central1-alternate-store.cloudfunctions.net/stripePayment';
+  CardDetails _card = CardDetails();
 
 
-    final url = Uri.parse('https://us-central1-alternate-store.cloudfunctions.net/stripePayment');
+  Future<void> startpayment() async {
 
-    final response = await http.get(
-      url,
-      headers: {
-        'Content-Type': 'application/json'
-      }
+    _card.copyWith(number: '4242424242424242');
+    _card.copyWith(expirationYear: 24);
+    _card.copyWith(expirationMonth: 05);
+    _card.copyWith(cvc: '777');
+
+    await Stripe.instance.dangerouslyUpdateCardDetails(_card);
+
+    // 1. setup billing details
+    final billingDetails = BillingDetails(
+      phone: widget.orderModel!.receipientInfo['CONTACT'],
+      address: Address(
+        city: widget.orderModel!.receipientInfo['DISTRICT'], 
+        country: 'HK', 
+        line1: widget.orderModel!.receipientInfo['UNIT_AND_BUILDING'], 
+        line2: widget.orderModel!.receipientInfo['ESTATE'], 
+        postalCode: '', 
+        state: 'state'
+      ),
     );
 
-    paymentIntentData = json.decode(response.body);
-
-    await Stripe.instance.initPaymentSheet(
-      paymentSheetParameters: SetupPaymentSheetParameters(
-        paymentIntentClientSecret: paymentIntentData!['paymentIntent'],
-        applePay: false,
-        googlePay: false,
-        style: ThemeMode.system,
-        merchantCountryCode: 'UK',
-        merchantDisplayName: 'xxxxx'
+    final paymentMethod = await Stripe.instance.createPaymentMethod(
+      PaymentMethodParams.card(
+        billingDetails: billingDetails,
       )
     );
-    setState(() {});
 
-    displayPaymentSheet();
+    // 3. call API to create PaymentIntent
+    final paymentIntentResult = await callNoWebhookPayEndpointMethodId(
+      useStripeSdk: true,
+      paymentMethodId: paymentMethod.id,
+      currency: 'eur', // mocked data
+      items: [
+        {
+          'id': int.parse(widget.orderModel!.orderNumber),
+          'amount': widget.orderModel!.totalAmount,
+        }
+      ],
+    );
+
+    print(paymentIntentResult);
+
 
   }
 
-  Future<void> displayPaymentSheet() async {
-    print('>>>>>> Display playment sheet');
-    try{
-      await Stripe.instance.presentPaymentSheet();
-      setState(() {
-        paymentIntentData = null;
-      });
-      CustomSnackBar().show(context, 'Paid Successfully');
-    } catch(e){
-      print(e);
-    }
+  Future<Map<String, dynamic>> callNoWebhookPayEndpointMethodId({
+    required bool useStripeSdk,
+    required String paymentMethodId,
+    required String currency,
+    List<Map<String, dynamic>>? items,
+  }) async {
+    final url = Uri.parse('$kApiUrl/pay-without-webhooks');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'useStripeSdk': useStripeSdk,
+        'paymentMethodId': paymentMethodId,
+        'currency': currency,
+        'items': items
+      }),
+    );
+    return json.decode(response.body);
   }
 
   @override
@@ -130,12 +153,12 @@ class _CheckOutState extends State<CheckOut> {
                 ),
               ),
 
-              const StripePaymentCardForm(),
+              const StripeCardForm(),
               // _buildPaymentMehtod(),
 
               ElevatedButton(
                 onPressed: (){
-                  startPayment();
+                  startpayment();
                 }, 
                 child: Text('testing payment button')
               )
