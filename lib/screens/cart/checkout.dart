@@ -31,52 +31,123 @@ class _CheckOutState extends State<CheckOut> {
   final kApiUrl = 'https://us-central1-alternate-store.cloudfunctions.net/stripePayment';
   CardDetails _card = CardDetails();
 
-
   Future<void> startpayment() async {
 
-    _card.copyWith(number: '4242424242424242');
-    _card.copyWith(expirationYear: 24);
-    _card.copyWith(expirationMonth: 05);
-    _card.copyWith(cvc: '777');
+    _card = _card.copyWith(number: '42424242424242');
+    _card = _card.copyWith(expirationMonth: 05);
+    _card = _card.copyWith(expirationYear: 24);
+    _card = _card.copyWith(cvc:'111');
+
+    print(_card);
 
     await Stripe.instance.dangerouslyUpdateCardDetails(_card);
 
-    // 1. setup billing details
-    final billingDetails = BillingDetails(
-      phone: widget.orderModel!.receipientInfo['CONTACT'],
-      address: Address(
-        city: widget.orderModel!.receipientInfo['DISTRICT'], 
-        country: 'HK', 
-        line1: widget.orderModel!.receipientInfo['UNIT_AND_BUILDING'], 
-        line2: widget.orderModel!.receipientInfo['ESTATE'], 
-        postalCode: '', 
-        state: 'state'
-      ),
-    );
+    try{
 
-    final paymentMethod = await Stripe.instance.createPaymentMethod(
-      PaymentMethodParams.card(
+       // 1. Gather customer billing information (ex. email)
+
+      const billingDetails = BillingDetails(
+        email: 'email@stripe.com',
+        phone: '+48888000888',
+        address: Address(
+          city: 'Houston',
+          country: 'US',
+          line1: '1459  Circle Drive',
+          line2: '',
+          state: 'Texas',
+          postalCode: '77063',
+        ),
+      ); // mocked data for tests
+
+      // 2. Create payment method
+      final paymentMethod =
+          await Stripe.instance.createPaymentMethod(const PaymentMethodParams.card(
         billingDetails: billingDetails,
-      )
-    );
+      ));
 
-    // 3. call API to create PaymentIntent
-    final paymentIntentResult = await callNoWebhookPayEndpointMethodId(
-      useStripeSdk: true,
-      paymentMethodId: paymentMethod.id,
-      currency: 'eur', // mocked data
-      items: [
-        {
-          'id': int.parse(widget.orderModel!.orderNumber),
-          'amount': widget.orderModel!.totalAmount,
+      // 3. call API to create PaymentIntent
+      final paymentIntentResult = await callNoWebhookPayEndpointMethodId(
+        useStripeSdk: true,
+        paymentMethodId: paymentMethod.id,
+        currency: 'usd', // mocked data
+        items: [
+          {'id': 'id'}
+        ],
+      );
+
+      if (paymentIntentResult['error'] != null) {
+        // Error during creating or confirming Intent
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${paymentIntentResult['error']}')));
+        return;
+      }
+
+      if (paymentIntentResult['clientSecret'] != null &&
+          paymentIntentResult['requiresAction'] == null) {
+        // Payment succedeed
+
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content:
+                Text('Success!: The payment was confirmed successfully!')));
+        return;
+      }
+
+
+      if (paymentIntentResult['clientSecret'] != null &&
+          paymentIntentResult['requiresAction'] == true) {
+        // 4. if payment requires action calling handleCardAction
+        final paymentIntent = await Stripe.instance
+            .handleCardAction(paymentIntentResult['clientSecret']);
+
+        if (paymentIntent.status == PaymentIntentsStatus.RequiresConfirmation) {
+          // 5. Call API to confirm intent
+          await confirmIntent(paymentIntent.id);
+        } else {
+          // Payment succedeed
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Error: ${paymentIntentResult['error']}')));
         }
-      ],
-    );
+      }
 
-    print(paymentIntentResult);
 
+
+    } catch (e){
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: $e')));
+      rethrow;
+
+    }
 
   }
+
+  Future<void> confirmIntent(String paymentIntentId) async {
+    final result = await callNoWebhookPayEndpointIntentId(
+        paymentIntentId: paymentIntentId);
+    if (result['error'] != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: ${result['error']}')));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Success!: The payment was confirmed successfully!')));
+    }
+  }
+
+
+  Future<Map<String, dynamic>> callNoWebhookPayEndpointIntentId({
+    required String paymentIntentId,
+  }) async {
+    final url = Uri.parse('$kApiUrl/charge-card-off-session');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({'paymentIntentId': paymentIntentId}),
+    );
+    return json.decode(response.body);
+  }
+
 
   Future<Map<String, dynamic>> callNoWebhookPayEndpointMethodId({
     required bool useStripeSdk,
@@ -139,6 +210,10 @@ class _CheckOutState extends State<CheckOut> {
               ),
 
               _buildCardIcon(),
+
+              CardField(
+                numberHintText: '0000 xxxx pppp bbbb',
+              ),
 
               //  Total payment amount
               Padding(
