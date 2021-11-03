@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:alternate_store/widgets/custom_snackbar.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:alternate_store/constants.dart';
@@ -15,6 +16,7 @@ import 'package:alternate_store/viewmodel/checkout_viewmodel.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 
 class CheckOut extends StatefulWidget {
@@ -28,151 +30,148 @@ class CheckOut extends StatefulWidget {
 class _CheckOutState extends State<CheckOut> {
 
   int _initTagIndex = 0;
-  final kApiUrl = 'https://us-central1-alternate-store.cloudfunctions.net/stripePayment';
-  CardDetails _card = CardDetails();
+  Map<String, dynamic>? paymentIntentData;
+  late CardDetails _card = CardDetails();
+  String kApiUrl = 'https://api.stripe.com/v1/payment_intents';
+  
+  final TextEditingController _cardNumberController = TextEditingController();
+  final TextEditingController _cardExpDateController = TextEditingController();
+  final TextEditingController _cardCVCController = TextEditingController();
+  final TextEditingController _cardHolderNameController = TextEditingController();
 
-  Future<void> startpayment() async {
+  Future<void> makePayment() async {
 
-    _card = _card.copyWith(number: '42424242424242');
-    _card = _card.copyWith(expirationMonth: 05);
-    _card = _card.copyWith(expirationYear: 24);
-    _card = _card.copyWith(cvc:'111');
+    const url = 'https://us-central1-alternate-store.cloudfunctions.net/stripePayment';
 
-    print(_card);
+    String amount = (widget.orderModel!.totalAmount * 100).toInt().toString();
 
-    await Stripe.instance.dangerouslyUpdateCardDetails(_card);
+    final http.Response response = await http.post(
+      Uri.parse('$url?amount=$amount&currency=HKD')
+    );
 
+    paymentIntentData = json.decode(response.body);
+    
+    await Stripe.instance.initPaymentSheet(
+      paymentSheetParameters: SetupPaymentSheetParameters(
+        paymentIntentClientSecret: paymentIntentData!['paymentIntent'],
+        applePay: true,
+        googlePay: true,
+        style: ThemeMode.light,
+        merchantCountryCode: 'HK',
+        merchantDisplayName: 'XXXXX',
+      )
+    );
+    setState(() {});
+    displayPaymentSheet();
+  }
+
+  Future<void> displayPaymentSheet() async {
     try{
-
-       // 1. Gather customer billing information (ex. email)
-
-      const billingDetails = BillingDetails(
-        email: 'email@stripe.com',
-        phone: '+48888000888',
-        address: Address(
-          city: 'Houston',
-          country: 'US',
-          line1: '1459  Circle Drive',
-          line2: '',
-          state: 'Texas',
-          postalCode: '77063',
-        ),
-      ); // mocked data for tests
-
-      // 2. Create payment method
-      final paymentMethod =
-          await Stripe.instance.createPaymentMethod(const PaymentMethodParams.card(
-        billingDetails: billingDetails,
-      ));
-
-      // 3. call API to create PaymentIntent
-      final paymentIntentResult = await callNoWebhookPayEndpointMethodId(
-        useStripeSdk: true,
-        paymentMethodId: paymentMethod.id,
-        currency: 'usd', // mocked data
-        items: [
-          {'id': 'id'}
-        ],
+      await Stripe.instance.presentPaymentSheet(
+        parameters: PresentPaymentSheetParameters(
+          clientSecret: paymentIntentData!['paymentIntent'],
+          confirmPayment: true
+        )
       );
-
-      if (paymentIntentResult['error'] != null) {
-        // Error during creating or confirming Intent
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: ${paymentIntentResult['error']}')));
-        return;
-      }
-
-      if (paymentIntentResult['clientSecret'] != null &&
-          paymentIntentResult['requiresAction'] == null) {
-        // Payment succedeed
-
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content:
-                Text('Success!: The payment was confirmed successfully!')));
-        return;
-      }
-
-
-      if (paymentIntentResult['clientSecret'] != null &&
-          paymentIntentResult['requiresAction'] == true) {
-        // 4. if payment requires action calling handleCardAction
-        final paymentIntent = await Stripe.instance
-            .handleCardAction(paymentIntentResult['clientSecret']);
-
-        if (paymentIntent.status == PaymentIntentsStatus.RequiresConfirmation) {
-          // 5. Call API to confirm intent
-          await confirmIntent(paymentIntent.id);
-        } else {
-          // Payment succedeed
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Error: ${paymentIntentResult['error']}')));
-        }
-      }
-
-
-
-    } catch (e){
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: $e')));
-      rethrow;
-
-    }
-
-  }
-
-  Future<void> confirmIntent(String paymentIntentId) async {
-    final result = await callNoWebhookPayEndpointIntentId(
-        paymentIntentId: paymentIntentId);
-    if (result['error'] != null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: ${result['error']}')));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Success!: The payment was confirmed successfully!')));
+      setState(() {
+        paymentIntentData = null;
+      });
+    }catch (e){
+      print(e.toString());
     }
   }
 
 
-  Future<Map<String, dynamic>> callNoWebhookPayEndpointIntentId({
-    required String paymentIntentId,
-  }) async {
-    final url = Uri.parse('$kApiUrl/charge-card-off-session');
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: json.encode({'paymentIntentId': paymentIntentId}),
-    );
-    return json.decode(response.body);
-  }
 
 
-  Future<Map<String, dynamic>> callNoWebhookPayEndpointMethodId({
-    required bool useStripeSdk,
-    required String paymentMethodId,
-    required String currency,
-    List<Map<String, dynamic>>? items,
-  }) async {
-    final url = Uri.parse('$kApiUrl/pay-without-webhooks');
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: json.encode({
-        'useStripeSdk': useStripeSdk,
-        'paymentMethodId': paymentMethodId,
-        'currency': currency,
-        'items': items
-      }),
-    );
-    return json.decode(response.body);
-  }
+
+
+
+  // Future<void> makePayment() async {
+  //   try{
+
+  //     paymentIntentData = await createPaymentIntent(
+  //       widget.orderModel!.totalAmount, 
+  //       'hkd'
+  //     );
+
+  //     await Stripe.instance.initPaymentSheet(
+  //       paymentSheetParameters: SetupPaymentSheetParameters(
+  //         paymentIntentClientSecret: paymentIntentData!['client_secret'],
+  //         applePay: true,
+  //         googlePay: true,
+  //         testEnv: true,
+  //         style: ThemeMode.light,
+  //         merchantCountryCode: 'HK',
+  //         merchantDisplayName: 'Test'
+  //       )
+  //     );
+
+  //     displayPaymentSheet();
+
+  //   } catch (e){
+  //     print('exception: ' + e.toString());
+  //   }
+
+  // }
+
+  // displayPaymentSheet() async {
+  //   try{
+  //     await Stripe.instance.presentPaymentSheet(
+  //       // ignore: deprecated_member_use
+  //       // parameters: PresentPaymentSheetParameters(
+  //       //   clientSecret: paymentIntentData!['client_secret'],
+  //       //   confirmPayment: true
+  //       // )
+  //     );
+  //     setState(() {
+  //       paymentIntentData = null;
+  //     });
+
+  //     CustomSnackBar().show(context, 'Payment Successfully');
+  //   } on StripeException catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
+
+  // createPaymentIntent(double amount, String currency) async {
+  //   try{
+
+  //     Map<String, dynamic> body = {
+  //       'amount': calculateAmount(amount),
+  //       'currency': currency,
+  //       'payment_method_types[]': 'card'
+  //     };
+
+  //     var response = await http.post(
+  //       Uri.parse('https://api.stripe.com/v1/payment_intents'),
+  //       body: body,
+  //       headers: {
+  //         'Authorization' : 'Bearer sk_test_51JiJNYDvGyhPlIEQAjJUE013gILIUanUKN1aqaKsNfrKlN9ihXnsZ9mAgk7qe1xURTanDKlbqFl5AV9ZYpz2cenG00O2FrLD67',
+  //         'Content-Type': 'application/x-www-form-urlencoded '
+  //       }
+  //     );
+  //     print(jsonDecode(response.body.toString()));
+  //     return jsonDecode(response.body.toString());
+
+  //   } catch (e){
+  //     print('exception: ' + e.toString());
+  //   }
+  // }
+
+  // calculateAmount(double amount){
+  //   final price = (amount * 100).toInt().toString();
+  //   return price.toString();
+  // }
+  
 
   @override
   Widget build(BuildContext context) {
+
+    // _card.copyWith(number: '4242 4242 4242 4242');
+    // _card.copyWith(expirationMonth: 05);
+    // _card.copyWith(expirationYear: 24);
+    // _card.copyWith(cvc: '717');
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -211,9 +210,9 @@ class _CheckOutState extends State<CheckOut> {
 
               _buildCardIcon(),
 
-              CardField(
-                numberHintText: '0000 xxxx pppp bbbb',
-              ),
+              // CardField(
+              //   numberHintText: '0000 xxxx pppp bbbb',
+              // ),
 
               //  Total payment amount
               Padding(
@@ -228,14 +227,22 @@ class _CheckOutState extends State<CheckOut> {
                 ),
               ),
 
-              const StripeCardForm(),
+              _buildCustomCardForm(),
+
+              // CardField(),
+
+              // const StripeCardForm(),
               // _buildPaymentMehtod(),
 
-              ElevatedButton(
-                onPressed: (){
-                  startpayment();
-                }, 
-                child: Text('testing payment button')
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: ElevatedButton(
+                  onPressed: (){
+                    makePayment();
+                    // _handlePayPress();
+                  }, 
+                  child: Text('testing payment button')
+                ),
               )
 
               // Padding(
@@ -479,4 +486,139 @@ class _CheckOutState extends State<CheckOut> {
     );
   }
 
+  Widget _buildCustomCardForm(){
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      child: Column(
+        children: [
+
+          CardInputTextFlied(
+            // maxLength: 19,
+            hintText: '信用卡號碼',
+            suffixIcon: Icons.credit_card,
+            textInputType: TextInputType.number,
+            textEditingController: _cardNumberController,
+            maskTextInputFormatter: MaskTextInputFormatter(
+              mask: '#### #### #### ####', 
+              filter: { "#": RegExp(r'[0-9]') }
+            ),
+          ),
+
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+
+              Expanded(
+                child: CardInputTextFlied(
+                  // maxLength: 5,
+                  hintText: 'MM/YY', 
+                  suffixIcon: Icons.today,
+                  textInputType: TextInputType.number,
+                  textEditingController: _cardExpDateController,
+                  maskTextInputFormatter: MaskTextInputFormatter(
+                    mask: '##/##', 
+                    filter: { "#": RegExp(r'[0-9]') }
+                  ),
+                )
+              ),
+              
+              Container(width: 10,),
+
+              Expanded(
+                child: Focus(
+                  // onFocusChange: (hasfocus) => _stripeViewModel.cvcOnFocus(hasfocus),
+                  child: CardInputTextFlied(
+                    // maxLength: 3,
+                    hintText: 'CVC',
+                    suffixIcon: Icons.lock_open,
+                    textInputType: TextInputType.number,
+                    textEditingController: _cardCVCController,
+                    maskTextInputFormatter: MaskTextInputFormatter(
+                      mask: '###', 
+                      filter: { "#": RegExp(r'[0-9]') }
+                    ),
+                  ),
+                )
+              ),
+
+            ],
+          ),
+
+          CardInputTextFlied(
+            // maxLength: 30,
+            hintText: '持卡人名字', 
+            suffixIcon: Icons.person,
+            textInputType: TextInputType.text,
+            textEditingController: _cardHolderNameController,
+             maskTextInputFormatter: MaskTextInputFormatter(
+              mask: '###########################', 
+              filter: { "#": RegExp(r'[a-zA-Z0-9 .!,-]') }
+            ),
+          ),
+          
+          
+        ],
+      ),
+    );
+  }
+
+  
+
+}
+
+
+class CardInputTextFlied extends StatelessWidget {
+  final TextInputType? textInputType;
+  // final int? maxLength;
+  final TextEditingController? textEditingController;
+  final String? hintText;
+  final IconData? suffixIcon;
+  final MaskTextInputFormatter? maskTextInputFormatter;
+
+  const CardInputTextFlied({ 
+    Key? key, 
+    this.textInputType, 
+    // this.maxLength, 
+    this.textEditingController, 
+    this.hintText, 
+    this.suffixIcon, 
+    this.maskTextInputFormatter 
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+    margin: const EdgeInsets.only(top: 16),
+      child: TextFormField(
+        keyboardType: textInputType,
+        controller: textEditingController,
+        // maxLength: maxLength,
+        inputFormatters: [maskTextInputFormatter!],
+        decoration: InputDecoration(
+          isDense: true,
+          hintText: hintText,
+          counterText: '',
+          suffixIcon: Container(
+            height: 20,
+            width: 20,
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Icon(
+              suffixIcon, 
+              color: Colors.grey,
+              size: 15,
+            ),
+          ),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey, width: 1),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey, width: 1),
+          ),
+        ),
+        onChanged: (value){
+          print(value);
+        },
+      ),
+    );
+  }
 }

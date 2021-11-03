@@ -32,10 +32,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Stripe.publishableKey = 'pk_test_51JiJNYDvGyhPlIEQt8gch6PLzaodjqzalsJ2Ebz9wu6GZus41QVnJj5MVqFFafN4C4PZn6WgEgzna6NqydMnOMae00sIMH2FDj';
+  Stripe.merchantIdentifier = 'testing';
   await Stripe.instance.applySettings();
-  Stripe.merchantIdentifier = 'any string works';
   await Firebase.initializeApp();
-  runApp(MultiProvider(
+  runApp(
+    MultiProvider(
     providers: [
       ChangeNotifierProvider.value(value: AuthService()),
       FutureProvider(
