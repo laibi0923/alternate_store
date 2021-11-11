@@ -82,11 +82,6 @@ class _CheckOutState extends State<CheckOut> {
   }
 
 
-
-
-
-
-
   // Future<void> makePayment() async {
   //   try{
 
