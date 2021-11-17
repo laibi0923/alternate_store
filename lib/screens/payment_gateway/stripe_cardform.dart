@@ -440,6 +440,7 @@ class CardInputTextFlied extends StatelessWidget {
           ),
         ),
         onChanged: (value){
+          // ignore: avoid_print
           print(value);
         },
       ),

@@ -118,11 +118,6 @@ class _UserInformationState extends State<UserInformation> {
                     isPassword: false,
                     mTextEditingController: _userNameEditingControlle,
                   ),
-                  // CustomizeTextField(
-                  //   title: '聯絡電話',
-                  //   isPassword: false,
-                  //   mTextEditingController: _phoneEditingControlle,
-                  // ),
                   CustomizePhoneTextField(
                     title: '聯絡電話',
                     isPassword: false,

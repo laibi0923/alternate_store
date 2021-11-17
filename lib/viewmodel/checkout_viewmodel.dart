@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:convert';
 
 import 'package:alternate_store/constants.dart';
@@ -7,10 +9,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:alternate_store/model/order_model.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:alternate_store/model/user_model.dart';
 import 'package:alternate_store/screens/cart/thankyou_screen.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:alternate_store/service/auth_database.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:alternate_store/service/order_service.dart';
 import 'package:alternate_store/viewmodel/cart_viewmodel.dart';
 import 'package:alternate_store/widgets/custom_snackbar.dart';
@@ -20,6 +26,21 @@ class CheckoutViewModel extends ChangeNotifier{
   Map<String, dynamic>? paymentIntentData;
 
   bool _saveShippingAddress = false;
+
+  bool _showLoadingscreen = false;
+
+  bool get showloadingscreen{
+    return _showLoadingscreen;
+  }
+
+  void setShowLoadingScreen(){
+    if(_showLoadingscreen == true){
+      _showLoadingscreen = false;
+    } else {
+      _showLoadingscreen = true;
+    }
+    notifyListeners();
+  }
 
   bool get shippingAddressStatus{
     return _saveShippingAddress;
@@ -35,6 +56,8 @@ class CheckoutViewModel extends ChangeNotifier{
   }
   
   Future<void> makePayment(BuildContext context, OrderModel orderModel, UserModel userInfo) async {
+
+    setShowLoadingScreen();
 
     const url = 'https://us-central1-alternate-store.cloudfunctions.net/stripePayment';
 
@@ -66,8 +89,11 @@ class CheckoutViewModel extends ChangeNotifier{
       );
       paymentIntentData = null;
       orderInformation(context, userInfo, orderModel, 'Card');
+      setShowLoadingScreen();
     } catch (e) {
+      // ignore: avoid_print
       print(e.toString());
+      setShowLoadingScreen();
     }
 
   }
@@ -116,6 +142,7 @@ class CheckoutViewModel extends ChangeNotifier{
     OrderService(userInfo.uid).takeOrder(tempOrderModel).then((value) {
       Provider.of<CartViewModel>(context, listen: false).clearCart();
       Navigator.pop(context);
+      
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => const ThankYouScreen()));
     });

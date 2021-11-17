@@ -1,13 +1,14 @@
-import 'dart:convert';
 import 'dart:ui';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:alternate_store/model/order_model.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:alternate_store/model/user_model.dart';
 import 'package:alternate_store/viewmodel/checkout_viewmodel.dart';
+import 'package:alternate_store/widgets/customize_phonetextfield.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:alternate_store/widgets/customize_textfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:http/http.dart' as http;
 import 'package:alternate_store/constants.dart';
-import 'package:alternate_store/model/order_model.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +55,7 @@ class _CheckOutState extends State<CheckOut> {
     final userInfo = Provider.of<UserModel>(context);
     final checkoutViewModel = Provider.of<CheckoutViewModel>(context);
 
+    // ignore: unnecessary_null_comparison
     if(userInfo != null){
       initUserInfo(userInfo); 
     }
@@ -81,9 +83,9 @@ class _CheckOutState extends State<CheckOut> {
                     maxLine: 1,
                     mTextEditingController: _userRecipientEditingControlle,
                   ),
-                  CustomizeTextField(
+                  CustomizePhoneTextField(
                     title: '聯絡電話',
-                    maxLine: 1,
+                    isPassword: false,
                     mTextEditingController: _phoneEditingControlle,
                   ),
                   CustomizeTextField(
@@ -180,7 +182,7 @@ class _CheckOutState extends State<CheckOut> {
                     usermodel
                   );
                 },
-                child: const Text('結帳')
+                child: const Text('輸入信用卡付款')
               )
 
             ],
@@ -201,6 +203,17 @@ class _CheckOutState extends State<CheckOut> {
               child: const Icon(Icons.close)),
             )
           ),
+
+          checkoutViewModel.showloadingscreen ?
+          Container(
+            color: const Color(0x90000000),
+            child: const Center(
+              child: CircularProgressIndicator(
+                color: Color(cPrimaryColor),
+              )
+            ),
+          ) : 
+          Container()
 
         ],
       ),
