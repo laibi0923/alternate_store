@@ -80,7 +80,8 @@ class _ScreenWarpperState extends State<ScreenWarpper> {
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(
             label: '',
-            icon: Icon(Icons.roofing)
+            icon: Icon(Icons.roofing),
+            backgroundColor: Colors.redAccent,
           ),
           const BottomNavigationBarItem(
             label: '',

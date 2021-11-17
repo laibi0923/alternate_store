@@ -56,7 +56,7 @@ class _SettingState extends State<Setting> {
       height: 460,
       padding: const EdgeInsets.only(top: 80),
       decoration: const BoxDecoration(
-        color:  Color(cPrimaryColor),
+        // color:  Color(cPrimaryColor),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(200),
           bottomRight: Radius.circular(200),
