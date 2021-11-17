@@ -206,7 +206,7 @@ class _CartState extends State<Cart> {
         ),
         onPressed: () => _cartViewModel.checkbill(authService.isSignedIn),
         child: const Text(
-          '結帳',
+          '輸入地址及付款方式',
         ),
       )
     );

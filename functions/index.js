@@ -21,23 +21,23 @@ exports.stripePayment = functions.https.onRequest(async (req, res) => {
         }
     })
 
-    const paymentIntent = await stripe.paymentIntents.create({
-        amount: req.query.amount,
-        currency: req.query.currency,
-        payment_method_type: ['card']
-        // billing_details: req.query.billing_details 
-    }, function(err, paymentIntent){
-        if(err != null){
-            console.log(err);
-        } else {
-            res.json({paymentIntent: paymentIntent.client_secret})
-        }
-    })
+    // const paymentIntent = await stripe.paymentIntents.create({
+    //     amount: req.query.amount,
+    //     currency: req.query.currency,
+    //     payment_method_type: ['card']
+    //     // billing_details: req.query.billing_details 
+    // }, function(err, paymentIntent){
+    //     if(err != null){
+    //         console.log(err);
+    //     } else {
+    //         res.json({paymentIntent: paymentIntent.client_secret})
+    //     }
+    // })
 
-    const paymentIntent = await stripe.paymentIntents.confirm(
-        'pi_3Jj5XFDvGyhPlIEQ0AbEszz1',
-        {payment_method: 'pm_card_visa'}
-      );
+    // const paymentIntent = await stripe.paymentIntents.confirm(
+    //     'pi_3Jj5XFDvGyhPlIEQ0AbEszz1',
+    //     {payment_method: 'pm_card_visa'}
+    //   );
 
 
 })

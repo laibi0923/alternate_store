@@ -54,7 +54,6 @@ class OrderService{
             'ORDER_NUMBER' : orderModel.orderNumber,
             'REF' : xRef,
             'ISCOMPLETE' : false,
-            'PAYMENT_RECEIPT' : orderModel.paymentReceipt
           });
         }
       });

@@ -223,7 +223,6 @@ class CartViewModel extends ChangeNotifier {
           {},
           tempProductList,
           '',
-          ''
         )
       )
     ));

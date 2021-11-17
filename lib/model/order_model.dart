@@ -13,10 +13,9 @@ class OrderModel {
   final Map<String, dynamic> receipientInfo;
   final List orderProduct;
   final String paymentMothed;
-  final String paymentReceipt;
   String docId;
 
-  OrderModel(this.orderDate, this.orderNumber, this.subAmount, this.shippingAmount, this.totalAmount, this.discountCode, this.discountAmount, this.receipientInfo, this.orderProduct, this.paymentMothed, this.paymentReceipt);
+  OrderModel(this.orderDate, this.orderNumber, this.subAmount, this.shippingAmount, this.totalAmount, this.discountCode, this.discountAmount, this.receipientInfo, this.orderProduct, this.paymentMothed);
   
   OrderModel.fromFirestore(Map<String, dynamic> dataMap, String id) :
     orderDate = dataMap['ORDER_DATE'],
@@ -29,6 +28,5 @@ class OrderModel {
     receipientInfo = dataMap['RECIPIENT_INFO'],
     orderProduct = dataMap['ORDER_PRODUCT'],
     paymentMothed = dataMap['PAYMENT_METHOD'],
-    paymentReceipt = dataMap['PAYMENT_RECEIPT'],
     docId = id;
 }

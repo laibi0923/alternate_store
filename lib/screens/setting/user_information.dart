@@ -17,18 +17,13 @@ class UserInformation extends StatefulWidget {
 }
 
 class _UserInformationState extends State<UserInformation> {
-  final TextEditingController _userNameEditingControlle =
-      TextEditingController();
+  final TextEditingController _userNameEditingControlle = TextEditingController();
   final TextEditingController _emailEditingControlle = TextEditingController();
   final TextEditingController _phoneEditingControlle = TextEditingController();
-  final TextEditingController _userRecipientEditingControlle =
-      TextEditingController();
-  final TextEditingController _address1EditingControlle =
-      TextEditingController();
-  final TextEditingController _address2EditingControlle =
-      TextEditingController();
-  final TextEditingController _address3EditingControlle =
-      TextEditingController();
+  final TextEditingController _userRecipientEditingControlle = TextEditingController();
+  final TextEditingController _unitEditingControlle = TextEditingController();
+  final TextEditingController _estateEditingControlle = TextEditingController();
+  final TextEditingController _districtEditingControlle = TextEditingController();
 
   void _updateUserInfo(UserModel usermodel) {
     if (_userNameEditingControlle.text.isEmpty) {
@@ -42,9 +37,9 @@ class _UserInformationState extends State<UserInformation> {
             '',
             _userNameEditingControlle.text,
             _phoneEditingControlle.text,
-            _address1EditingControlle.text,
-            _address2EditingControlle.text,
-            _address3EditingControlle.text,
+            _unitEditingControlle.text,
+            _estateEditingControlle.text,
+            _districtEditingControlle.text,
             '',
             ''))
         .then((value) => Navigator.pop(context));
@@ -52,14 +47,19 @@ class _UserInformationState extends State<UserInformation> {
 
   @override
   void initState() {
-    // _emailEditingControlle.text = widget.userInfo.email;
-    // _userNameEditingControlle.text =  widget.userInfo.name;
-    // _phoneEditingControlle.text =  widget.userInfo.contactNo;
-    // _userRecipientEditingControlle.text = widget.userInfo.recipientName;
-    // _address1EditingControlle.text = widget.userInfo.unitAndBuilding;
-    // _address2EditingControlle.text = widget.userInfo.estate;
-    // _address3EditingControlle.text = widget.userInfo.district;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _userNameEditingControlle.dispose();
+    _emailEditingControlle.dispose();
+    _phoneEditingControlle.dispose();
+    _userRecipientEditingControlle.dispose();
+    _unitEditingControlle.dispose();
+    _estateEditingControlle.dispose();
+    _districtEditingControlle.dispose();
+    super.dispose();
   }
 
   void initUserInfo(UserModel userInfo) {
@@ -67,13 +67,14 @@ class _UserInformationState extends State<UserInformation> {
     _userNameEditingControlle.text = userInfo.name;
     _phoneEditingControlle.text = userInfo.contactNo;
     _userRecipientEditingControlle.text = userInfo.recipientName;
-    _address1EditingControlle.text = userInfo.unitAndBuilding;
-    _address2EditingControlle.text = userInfo.estate;
-    _address3EditingControlle.text = userInfo.district;
+    _unitEditingControlle.text = userInfo.unitAndBuilding;
+    _estateEditingControlle.text = userInfo.estate;
+    _districtEditingControlle.text = userInfo.district;
   }
 
   @override
   Widget build(BuildContext context) {
+    
     final userInfo = Provider.of<UserModel>(context);
 
     initUserInfo(userInfo);
@@ -143,17 +144,17 @@ class _UserInformationState extends State<UserInformation> {
                   CustomizeTextField(
                     title: '室 / 樓層',
                     isPassword: false,
-                    mTextEditingController: _address1EditingControlle,
+                    mTextEditingController: _unitEditingControlle,
                   ),
                   CustomizeTextField(
                     title: '大廈名稱',
                     isPassword: false,
-                    mTextEditingController: _address2EditingControlle,
+                    mTextEditingController: _estateEditingControlle,
                   ),
                   CustomizeTextField(
                     title: '屋苑名稱 / 地區',
                     isPassword: false,
-                    mTextEditingController: _address3EditingControlle,
+                    mTextEditingController: _districtEditingControlle,
                   ),
                   Container(
                     height: 200,

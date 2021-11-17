@@ -1,5 +1,4 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
-
 import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/model/mailbox_model.dart';
 import 'package:alternate_store/screens/cart/cart.dart';
