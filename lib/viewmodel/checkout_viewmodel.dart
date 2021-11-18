@@ -88,7 +88,7 @@ class CheckoutViewModel extends ChangeNotifier{
         )
       );
       paymentIntentData = null;
-      orderInformation(context, userInfo, orderModel, 'Card');
+      orderInformation(context, userInfo, orderModel, '信用卡');
       setShowLoadingScreen();
     } catch (e) {
       // ignore: avoid_print

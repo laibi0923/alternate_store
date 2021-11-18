@@ -4,6 +4,7 @@ import 'package:alternate_store/model/order_model.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:alternate_store/model/user_model.dart';
 import 'package:alternate_store/viewmodel/checkout_viewmodel.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:alternate_store/widgets/customize_phonetextfield.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:alternate_store/widgets/customize_textfield.dart';
