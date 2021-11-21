@@ -1,4 +1,5 @@
 // @dart=2.9
+import 'package:alternate_store/widgets/currency_textview.dart';
 import 'package:flutter/material.dart';
 import 'package:alternate_store/model/product_model.dart';
 
@@ -16,9 +17,9 @@ Widget addCartButton(BuildContext context, ProductModel productModel){
         ),
         child: Column(
           children: [
-            Text(
-              productModel.discountPrice == 0 ? 'HKD\$ ' + productModel.price.toStringAsFixed(2) : 'HKD\$ ' + productModel.discountPrice.toStringAsFixed(2),
-              style: const TextStyle(color: Colors.white),
+            CurrencyTextView(
+              value: productModel.discountPrice == 0 ? productModel.price : productModel.discountPrice, 
+              textStyle: const TextStyle(color: Colors.white),
             ),
             const Text(
               '產品資訊',

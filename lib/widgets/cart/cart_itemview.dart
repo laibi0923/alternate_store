@@ -1,4 +1,5 @@
 // @dart=2.9
+import 'package:alternate_store/widgets/currency_textview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:alternate_store/constants.dart';
@@ -93,9 +94,9 @@ Widget cartItemView(CartModel cartdata, ProductModel productdata){
                         
                         // 判斷如商品冇特價時不顯示, 相反則顥示正價 (刪除線)
                         productdata.discountPrice == 0 ? Container() :
-                        Text(
-                          'HKD\$ ' + productdata.price.toStringAsFixed(2),
-                          style: const TextStyle(
+                        CurrencyTextView(
+                          value: productdata.price, 
+                          textStyle: const TextStyle(
                             fontSize: xTextSize11,
                             decoration: TextDecoration.lineThrough
                           ),
@@ -103,15 +104,16 @@ Widget cartItemView(CartModel cartdata, ProductModel productdata){
                         
                         //  判斷如商品冇特價時顯示正價, 相反以紅色顯示特價銀碼
                         productdata.discountPrice != 0 ?
-                        Text(
-                          'HKD\$ ' + productdata.discountPrice.toStringAsFixed(2),
-                          style: const TextStyle(
+                        CurrencyTextView(
+                          value: productdata.discountPrice, 
+                          textStyle: const TextStyle(
                             fontSize: xTextSize14,
                             color: Color(cPink)
                           ),
                         ) :
-                        Text(
-                          'HKD\$ ' + productdata.price.toStringAsFixed(2),
+                        CurrencyTextView(
+                          value: productdata.price, 
+                          textStyle: const TextStyle(),
                         )
                 
                       ],

@@ -53,6 +53,7 @@ class OrderService{
             'ORDER_DATE' : orderModel.orderDate,
             'ORDER_NUMBER' : orderModel.orderNumber,
             'REF' : xRef,
+            'AMOUNT' : orderModel.totalAmount,
             'ISCOMPLETE' : false,
           });
         }

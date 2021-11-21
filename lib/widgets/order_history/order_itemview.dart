@@ -1,5 +1,6 @@
 // @dart=2.9
 import 'package:alternate_store/model/order_product_model.dart';
+import 'package:alternate_store/widgets/currency_textview.dart';
 import 'package:flutter/material.dart';
 import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/model/order_model.dart';
@@ -31,7 +32,10 @@ Widget orderItemView(OrderModel orderModel){
                 Text(orderModel.orderNumber),
                 const Spacer(),
                 Text(orderModel.orderProduct.length.toString() + ' 件商品'),
-                Text('HKD\$ ' + orderModel.totalAmount.toStringAsFixed(2)),
+                CurrencyTextView(
+                  value: orderModel.totalAmount, 
+                  textStyle: TextStyle()
+                )
               ],
             ),
           ),

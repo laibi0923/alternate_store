@@ -57,6 +57,14 @@ class CheckoutViewModel extends ChangeNotifier{
   
   Future<void> makePayment(BuildContext context, OrderModel orderModel, UserModel userInfo) async {
 
+    //  判斷送貨地址
+    if (userInfo.unitAndBuilding.isEmpty &&
+        userInfo.estate.isEmpty &&
+        userInfo.district.isEmpty) {
+      CustomSnackBar().show(context, '請輸入送貨地址');
+      return;
+    }
+
     setShowLoadingScreen();
 
     const url = 'https://us-central1-alternate-store.cloudfunctions.net/stripePayment';
@@ -101,14 +109,6 @@ class CheckoutViewModel extends ChangeNotifier{
   //  訂單資料
   Future<void> orderInformation(BuildContext context, UserModel userInfo, OrderModel orderModel, String paymentMothed) async {
     
-    //  判斷送貨地址
-    if (userInfo.unitAndBuilding.isEmpty &&
-        userInfo.estate.isEmpty &&
-        userInfo.district.isEmpty) {
-      CustomSnackBar().show(context, '請輸入送貨地址');
-      return;
-    }
-
     //  結用戶選中保存地址時用
     if(_saveShippingAddress == true){
       AuthDatabase(userInfo.uid).updateUserInfo(userInfo);

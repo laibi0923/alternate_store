@@ -1,4 +1,5 @@
 // @dart=2.9
+import 'package:alternate_store/widgets/currency_textview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -42,11 +43,6 @@ class ProductGridview extends StatelessWidget {
         ):
         GestureDetector(
           onTap: () async => await Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetails(productModel: productModelList[index]))),
-          // .then((value){
-          //   if(value == true){
-          //     Navigator.pop(context);
-          //   }
-          //}),
           child: Column(
             children: [
 
@@ -57,7 +53,7 @@ class ProductGridview extends StatelessWidget {
 
                     SizedBox(
                       width: itemWidth,
-                      child: ClipRRect(borderRadius: BorderRadius.circular(10),
+                      child: ClipRRect(borderRadius: BorderRadius.circular(7),
                         child: setCachedNetworkImage(productModelList[index].imagePatch[0], BoxFit.cover)
                       ),
                     ),
@@ -80,43 +76,34 @@ class ProductGridview extends StatelessWidget {
               ),
             
               Container(
-                //color: Colors.green,
                 padding: const EdgeInsets.only(top: 10),
                 height: 50,
                 child: Column(
                   children: [
 
                     // Product Price
-                    Text(
-                      productModelList[index].discountPrice == 0 ? "" :
-                      'HKD\$ ' + productModelList[index].price.toStringAsFixed(2),
-                      style: const TextStyle(
+                    productModelList[index].discountPrice == 0 ? 
+                    const Text('') : 
+                    CurrencyTextView(
+                      value: productModelList[index].price, 
+                      textStyle: const TextStyle(
                         fontSize: xTextSize11,
                         decoration: TextDecoration.lineThrough,
                       ),
                     ),
 
                     //  Product Price
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0),
-                      child: Text(
-                        productModelList[index].discountPrice == 0 ? 
-                        'HKD\$ ' + productModelList[index].price.toStringAsFixed(2) :
-                        'HKD\$ ' + productModelList[index].discountPrice.toStringAsFixed(2),
-                        style: TextStyle(
-                          fontSize: xTextSize16,
-                          color: productModelList[index].discountPrice == 0 ? Colors.black : const Color(cPink),
-                          fontWeight: FontWeight.bold
-                        ),
+                    CurrencyTextView(
+                      value: productModelList[index].discountPrice == 0 ? productModelList[index].price : productModelList[index].discountPrice, 
+                      textStyle: TextStyle(
+                        fontSize: xTextSize16,
+                        color: productModelList[index].discountPrice == 0 ? Colors.black : const Color(cPink),
+                        fontWeight: FontWeight.bold
                       ),
                     ),
-
                   ],
                 ),
               ),
-
-              
-
             ],
           ),
         );

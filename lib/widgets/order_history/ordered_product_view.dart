@@ -1,5 +1,6 @@
 // @dart=2.9
 import 'package:alternate_store/model/order_product_model.dart';
+import 'package:alternate_store/widgets/currency_textview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:alternate_store/constants.dart';
@@ -86,9 +87,9 @@ Widget orderedProductView(Map<String, dynamic> orderProductData){
                         
                         // 判斷如商品冇特價時不顯示, 相反則顥示正價 (刪除線)
                         orderProductModel.discount == 0 ? Container() :
-                        Text(
-                          'HKD\$ ' + orderProductModel.price.toStringAsFixed(2),
-                          style: const TextStyle(
+                        CurrencyTextView(
+                          value: orderProductModel.price, 
+                          textStyle: const TextStyle(
                             fontSize: xTextSize11,
                             decoration: TextDecoration.lineThrough
                           ),
@@ -96,15 +97,16 @@ Widget orderedProductView(Map<String, dynamic> orderProductData){
                         
                         //  判斷如商品冇特價時顯示正價, 相反以紅色顯示特價銀碼
                         orderProductModel.discount != 0 ?
-                        Text(
-                          'HKD\$ ' + orderProductModel.discount.toStringAsFixed(2),
-                          style: const TextStyle(
+                        CurrencyTextView(
+                          value: orderProductModel.discount, 
+                          textStyle: const TextStyle(
                             fontSize: xTextSize14,
                             color: Color(cPink)
                           ),
                         ) :
-                        Text(
-                          'HKD\$ ' + orderProductModel.price.toStringAsFixed(2),
+                        CurrencyTextView(
+                          value: orderProductModel.price, 
+                          textStyle: const TextStyle()
                         )
                 
                       ],

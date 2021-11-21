@@ -5,6 +5,7 @@ import 'package:alternate_store/model/product_model.dart';
 import 'package:alternate_store/viewmodel/cart_viewmodel.dart';
 import 'package:alternate_store/viewmodel/productdetails_viewmodel.dart';
 import 'package:alternate_store/viewmodel/wishlist_viewmodel.dart';
+import 'package:alternate_store/widgets/currency_textview.dart';
 import 'package:alternate_store/widgets/expand_text.dart';
 import 'package:alternate_store/widgets/product_details/addcart_button.dart';
 import 'package:alternate_store/widgets/product_details/addtowish_circlebutton.dart';
@@ -106,24 +107,24 @@ class _ProductDetailsState extends State<ProductDetails> {
                           padding: const EdgeInsets.only(left: 20, right: 20),
                           child: Row(
                             children: [
-                              
+
                               Padding(
                                 padding: const EdgeInsets.only(top: 20, right: 20),
-                                child: Text(
-                                  'HKD\$ ' + widget.productModel.price.toStringAsFixed(2),
-                                  style: TextStyle(
+                                child: CurrencyTextView(
+                                  value: widget.productModel.price, 
+                                  textStyle: TextStyle(
                                     fontSize: widget.productModel.discountPrice == 0 ? xTextSize18 : xTextSize14, 
                                     decoration: widget.productModel.discountPrice == 0 ?  null : TextDecoration.lineThrough
                                   ),
                                 ),
                               ),
-                                
+                    
                               widget.productModel.discountPrice == 0 ? Container() :
                               Padding(
                                 padding: const EdgeInsets.only(top: 20),
-                                child: Text(
-                                  'HKD\$ ' + widget.productModel.discountPrice.toStringAsFixed(2),
-                                  style: const TextStyle(
+                                child: CurrencyTextView(
+                                  value: widget.productModel.discountPrice, 
+                                  textStyle: const TextStyle(
                                     fontSize: xTextSize18, 
                                     color: Color(cPink)
                                   ),

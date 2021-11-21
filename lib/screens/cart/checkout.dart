@@ -4,6 +4,7 @@ import 'package:alternate_store/model/order_model.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:alternate_store/model/user_model.dart';
 import 'package:alternate_store/viewmodel/checkout_viewmodel.dart';
+import 'package:alternate_store/widgets/currency_textview.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:alternate_store/widgets/customize_phonetextfield.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -132,16 +133,30 @@ class _CheckOutState extends State<CheckOut> {
               ),
 
               //  Total payment amount
-              Padding(
-                padding: const EdgeInsets.only(bottom: 40, top: 20),
-                child: Text(
-                '付款總額\nHKD\$ ${widget.orderModel?.totalAmount.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: xTextSize18, 
-                    fontWeight: FontWeight.bold,
+              const Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: Center(
+                  child: Text(
+                    '付款總額',
+                    style: TextStyle(
+                      fontSize: xTextSize18, 
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  textAlign: TextAlign.center
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 40),
+                child: Center(
+                  child: CurrencyTextView(
+                    value: widget.orderModel!.totalAmount, 
+                    textStyle: const TextStyle(
+                      fontSize: xTextSize18, 
+                      fontWeight: FontWeight.bold,
+                    ),
+                    // textAlign: TextAlign.center
+                  ),
+                )
               ),
  
               Row(
