@@ -17,8 +17,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CheckOut extends StatefulWidget {
+  final UserModel? userModel;
   final OrderModel? orderModel;
-  const CheckOut({Key? key, this.orderModel}) : super(key: key);
+  const CheckOut({Key? key, this.orderModel, this.userModel}) : super(key: key);
 
   @override
   State<CheckOut> createState() => _CheckOutState();
@@ -26,13 +27,22 @@ class CheckOut extends StatefulWidget {
 
 class _CheckOutState extends State<CheckOut> {
 
-  // bool _saveShippingAddres = false;
   final TextEditingController _userRecipientEditingControlle = TextEditingController();
   final TextEditingController _phoneEditingControlle = TextEditingController();
   final TextEditingController _unitEditingControlle = TextEditingController();
   final TextEditingController _estateEditingControlle = TextEditingController();
   final TextEditingController _districtEditingControlle = TextEditingController();
-  
+
+  @override
+  void initState() {
+    super.initState();
+    _phoneEditingControlle.text = widget.userModel!.contactNo;
+    _userRecipientEditingControlle.text = widget.userModel!.recipientName;
+    _unitEditingControlle.text = widget.userModel!.unitAndBuilding;
+    _estateEditingControlle.text = widget.userModel!.estate;
+    _districtEditingControlle.text = widget.userModel!.district;
+  }
+
   @override
   void dispose() {
     _userRecipientEditingControlle.dispose();
@@ -43,24 +53,9 @@ class _CheckOutState extends State<CheckOut> {
     super.dispose();
   }
 
-  void initUserInfo(UserModel userInfo) {
-    _phoneEditingControlle.text = userInfo.contactNo;
-    _userRecipientEditingControlle.text = userInfo.recipientName;
-    _unitEditingControlle.text = userInfo.unitAndBuilding;
-    _estateEditingControlle.text = userInfo.estate;
-    _districtEditingControlle.text = userInfo.district;
-  }
 
   @override
   Widget build(BuildContext context) {
-
-    final userInfo = Provider.of<UserModel>(context);
-    final checkoutViewModel = Provider.of<CheckoutViewModel>(context);
-
-    // ignore: unnecessary_null_comparison
-    if(userInfo != null){
-      initUserInfo(userInfo); 
-    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -105,30 +100,7 @@ class _CheckOutState extends State<CheckOut> {
                     maxLine: 1,
                     mTextEditingController: _districtEditingControlle,
                   ),
-                  GestureDetector(
-                    onTap: () => checkoutViewModel.setShippingAddress(),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: checkoutViewModel.shippingAddressStatus ?
-                            const Icon(
-                              Icons.radio_button_checked,
-                              color: Color(cPrimaryColor)
-                            ) : 
-                            const Icon(
-                              Icons.radio_button_unchecked,
-                              color: Color(cPrimaryColor),                  
-                            ),
-                          ),
-                          const Text('保存運送地址')
-                        ],
-                      ),
-                    ),
-                  )
+                  _saveAddressButton(),
                 ],
               ),
 
@@ -171,35 +143,7 @@ class _CheckOutState extends State<CheckOut> {
                 ],
               ),
 
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: const Color(cPrimaryColor),
-                  elevation: 0,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(18)),
-                  ),
-                ),
-                onPressed: () {
-                  UserModel usermodel = UserModel(
-                    Timestamp.now(),
-                    userInfo.uid,
-                    userInfo.email,
-                    userInfo.name, 
-                    _phoneEditingControlle.text, 
-                    _unitEditingControlle.text, 
-                    _estateEditingControlle.text, 
-                    _districtEditingControlle.text, 
-                    '', 
-                    _userRecipientEditingControlle.text
-                  );
-                  checkoutViewModel.makePayment(
-                    context,
-                    widget.orderModel!,
-                    usermodel
-                  );
-                },
-                child: const Text('輸入信用卡付款')
-              )
+              _checkoutButton(widget.userModel!)
 
             ],
           ),
@@ -219,20 +163,94 @@ class _CheckOutState extends State<CheckOut> {
               child: const Icon(Icons.close)),
             )
           ),
-
-          checkoutViewModel.showloadingscreen ?
-          Container(
-            color: const Color(0x90000000),
-            child: const Center(
-              child: CircularProgressIndicator(
-                color: Color(cPrimaryColor),
-              )
-            ),
-          ) : 
-          Container()
+        
+          _showLoadingScreen()
 
         ],
       ),
+    );
+  }
+
+
+  Widget _saveAddressButton(){
+    return Consumer<CheckoutViewModel>(
+      builder: (context, checkoutViewModel, child) {
+        return GestureDetector(
+          onTap: () => checkoutViewModel.setShippingAddress(),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: checkoutViewModel.shippingAddressStatus ?
+                  const Icon(
+                    Icons.radio_button_checked,
+                    color: Color(cPrimaryColor)
+                  ) : 
+                  const Icon(
+                    Icons.radio_button_unchecked,
+                    color: Color(cPrimaryColor),                  
+                  ),
+                ),
+                const Text('保存運送地址')
+              ],
+            ),
+          ),
+        );
+      }
+    );
+  }
+
+  Widget _showLoadingScreen(){
+
+    final checkoutViewModel = Provider.of<CheckoutViewModel>(context);
+
+    return checkoutViewModel.showloadingscreen ?
+    Container(
+      color: const Color(0x90000000),
+      child: const Center(
+        child: CircularProgressIndicator(
+          color: Color(cPrimaryColor),
+        )
+      ),
+    ) : 
+    Container();
+  }
+
+  Widget _checkoutButton(UserModel userInfo){
+
+    final checkoutViewModel = Provider.of<CheckoutViewModel>(context);
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        primary: const Color(cPrimaryColor),
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(18)),
+        ),
+      ),
+      onPressed: () {
+        UserModel usermodel = UserModel(
+          Timestamp.now(),
+          userInfo.uid,
+          userInfo.email,
+          userInfo.name, 
+          _phoneEditingControlle.text, 
+          _unitEditingControlle.text, 
+          _estateEditingControlle.text, 
+          _districtEditingControlle.text, 
+          '', 
+          _userRecipientEditingControlle.text
+        );
+        checkoutViewModel.makePayment(
+          context,
+          widget.orderModel!,
+          usermodel
+        );
+      },
+      child: const Text('輸入信用卡付款')
     );
   }
 

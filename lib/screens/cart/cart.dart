@@ -3,6 +3,7 @@
 import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/model/coupon_model.dart';
 import 'package:alternate_store/model/product_model.dart';
+import 'package:alternate_store/model/user_model.dart';
 import 'package:alternate_store/model/usercoupon_model.dart';
 import 'package:alternate_store/service/auth_services.dart';
 import 'package:alternate_store/viewmodel/cart_viewmodel.dart';
@@ -192,6 +193,7 @@ class _CartState extends State<Cart> {
 
     final authService = Provider.of<AuthService>(context);
     final _cartViewModel = Provider.of<CartViewModel>(context);
+    final _userModel = Provider.of<UserModel>(context);
 
     return Container(
       width: double.infinity,
@@ -204,7 +206,7 @@ class _CartState extends State<Cart> {
             borderRadius: BorderRadius.all(Radius.circular(18)),
           ),
         ),
-        onPressed: () => _cartViewModel.checkbill(authService.isSignedIn),
+        onPressed: () => _cartViewModel.checkbill(authService.isSignedIn, _userModel),
         child: const Text(
           '輸入地址及付款方式',
         ),

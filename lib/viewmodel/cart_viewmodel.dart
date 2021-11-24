@@ -1,5 +1,6 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 
+import 'package:alternate_store/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -187,7 +188,7 @@ class CartViewModel extends ChangeNotifier {
   }
 
   //  結帳
-  void checkbill(bool isLoggedIn){
+  void checkbill(bool isLoggedIn, UserModel userModel){
 
     //  1. 重新將 Cart 內物品資料整理
     List<Map<String, dynamic>> tempProductList = [];
@@ -210,8 +211,9 @@ class CartViewModel extends ChangeNotifier {
 
     //  2. 判斷用戶有冇 Login , 有就跳去付款頁, 冇就跳去登入頁
     Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) => !isLoggedIn ? 
-    const UserEntrance(popBack: true) : 
+      const UserEntrance(popBack: true) : 
       CheckOut(
+        userModel: userModel,
         orderModel: OrderModel(
           Timestamp.now(), 
           'OD${ServicesX().randomStringGender(10, false)}', 
@@ -224,7 +226,7 @@ class CartViewModel extends ChangeNotifier {
           tempProductList,
           '',
         )
-      )
+      ), 
     ));
 
 

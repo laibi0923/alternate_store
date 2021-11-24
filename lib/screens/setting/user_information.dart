@@ -117,12 +117,7 @@ class _UserInformationState extends State<UserInformation> {
                     title: '用戶名稱',
                     isPassword: false,
                     mTextEditingController: _userNameEditingControlle,
-                  ),
-                  CustomizePhoneTextField(
-                    title: '聯絡電話',
-                    isPassword: false,
-                    mTextEditingController: _phoneEditingControlle,
-                  ),
+                  ),       
                   const Padding(
                     padding: EdgeInsets.only(top: 40, bottom: 20),
                     child: Text(
@@ -135,6 +130,11 @@ class _UserInformationState extends State<UserInformation> {
                     title: '收件人名稱',
                     isPassword: false,
                     mTextEditingController: _userRecipientEditingControlle,
+                  ),
+                  CustomizePhoneTextField(
+                    title: '聯絡電話',
+                    isPassword: false,
+                    mTextEditingController: _phoneEditingControlle,
                   ),
                   CustomizeTextField(
                     title: '室 / 樓層',
