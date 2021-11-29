@@ -1,4 +1,6 @@
 //@dart=2.9
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class OrderProductModel {
   final String colorName;
   final String colorImage;
@@ -9,7 +11,7 @@ class OrderProductModel {
   final String productNo;
   final bool refundAble;
   final String refundStatus;
-  final String shippingDate;
+  final Timestamp shippingDate;
   final String shippingStatus;
   final String size;
 

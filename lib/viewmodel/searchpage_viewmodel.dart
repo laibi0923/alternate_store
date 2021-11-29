@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class SearchPageViewModel extends ChangeNotifier{
 
   final List<ProductModel> _searchResultList = [];
+  // int _searchResultCounter = 0;
   int _categoryCurrentIndex = 0;
   final TextEditingController _searchFliedController = TextEditingController();
 
@@ -24,11 +25,16 @@ class SearchPageViewModel extends ChangeNotifier{
     return _categoryCurrentIndex;
   }
 
+  // int get searchResultCounter{
+  //   return _searchResultCounter;
+  // }
+
   //  Init viewmodel
   void initViewModel(){
     _categoryCurrentIndex = 9999999;
     _searchFliedController.clear();
     _searchResultList.clear();
+    // _searchResultCounter = 0;
   }
 
   //  Query from Category
@@ -65,8 +71,9 @@ class SearchPageViewModel extends ChangeNotifier{
     } else {
       _searchResultList.clear();
       for(int i = 0; i < productlist.length; i++){
-        if(productlist[i].productName.trim().toLowerCase().contains(queryString.trim().toLowerCase())){
+        if(productlist[i].productName.toUpperCase().contains(queryString.toUpperCase())){
           _searchResultList.add(productlist[i]);
+          // _searchResultCounter = _searchResultList.length;
         }
       }
     }

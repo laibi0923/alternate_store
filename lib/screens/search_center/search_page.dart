@@ -19,6 +19,10 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
 
+  // final List<ProductModel> _searchList = [];
+  // final TextEditingController _searchTextController = TextEditingController();
+  // late int _searchResultCounter = 0;
+
   @override
   void initState() {
     super.initState();
@@ -37,13 +41,9 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
 
+    final _productLIst = Provider.of<List<ProductModel>>(context);
     final _searchPageViewModel = Provider.of<SearchPageViewModel>(context);
 
     return Scaffold(
@@ -51,17 +51,24 @@ class _SearchScreenState extends State<SearchScreen> {
       appBar: _buildSearchAppbar(),
       body: Padding(
         padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-        child: _searchPageViewModel.searchResultList.isEmpty ? 
-        const Center(
-          child: Text(
-            '找不到結果',
-            style: TextStyle(color: Colors.grey),
-          ),
-        ) :
-        ProductGridview(
-          productModelList: _searchPageViewModel.searchResultList,
-          listLength: _searchPageViewModel.searchResultList.length,
+        child: Column(
+          children: [
+            _searchPageViewModel.searchResultList.isEmpty ? Container() :
+            Padding(
+              padding: const EdgeInsets.only(top: 0, bottom: 20),
+              child: Text(
+                '共找到 ${_searchPageViewModel.searchResultList.length} 筆相關資料',
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ),
+            Expanded(
+              child: _searchPageViewModel.searchFliedController.text.isNotEmpty || _searchPageViewModel.searchResultList.isNotEmpty ?
+              _buildProductGirdView(_searchPageViewModel.searchResultList) :
+              _buildProductGirdView(_productLIst)
+            )
+          ],
         )
+        
       )
     );
     
@@ -70,7 +77,7 @@ class _SearchScreenState extends State<SearchScreen> {
   AppBar _buildSearchAppbar(){
 
     final _categorylist = Provider.of<List<CategoryModel>>(context);
-    final _productlist = Provider.of<List<ProductModel>>(context, listen: false); 
+    final _productlist = Provider.of<List<ProductModel>>(context); 
     final _searchPageViewModel = Provider.of<SearchPageViewModel>(context);
 
     return AppBar(
@@ -154,6 +161,29 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         );
       }
+    );
+  }
+
+  Widget _buildProductGirdView(List<ProductModel> list){
+
+    if(list == null){
+      return const Center(
+        child: CircularProgressIndicator(color: Colors.grey),
+      );
+    }
+
+    if(list.isEmpty){
+      return const Center(
+        child: Text(
+          '找不到捜尋結果',
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
+    return ProductGridview(
+      productModelList: list,
+      listLength: list.length,
     );
   }
 
