@@ -19,10 +19,6 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
 
-  // final List<ProductModel> _searchList = [];
-  // final TextEditingController _searchTextController = TextEditingController();
-  // late int _searchResultCounter = 0;
-
   @override
   void initState() {
     super.initState();
