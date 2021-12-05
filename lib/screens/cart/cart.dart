@@ -10,8 +10,6 @@ import 'package:alternate_store/viewmodel/cart_viewmodel.dart';
 import 'package:alternate_store/widgets/cart/cart_itemview.dart';
 import 'package:alternate_store/widgets/cart/cart_summary_itemview.dart';
 import 'package:alternate_store/widgets/cart/empty_cart_screen.dart';
-import 'package:alternate_store/widgets/customize_phonetextfield.dart';
-import 'package:alternate_store/widgets/customize_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';

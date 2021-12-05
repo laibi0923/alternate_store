@@ -34,7 +34,7 @@ Widget orderItemView(OrderModel orderModel){
                 Text(orderModel.orderProduct.length.toString() + ' 件商品'),
                 CurrencyTextView(
                   value: orderModel.totalAmount, 
-                  textStyle: TextStyle()
+                  textStyle: const TextStyle()
                 )
               ],
             ),

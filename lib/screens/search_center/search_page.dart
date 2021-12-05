@@ -162,6 +162,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildProductGirdView(List<ProductModel> list){
 
+    // ignore: unnecessary_null_comparison
     if(list == null){
       return const Center(
         child: CircularProgressIndicator(color: Colors.grey),
