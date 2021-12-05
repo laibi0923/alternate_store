@@ -76,7 +76,7 @@ Widget cartItemView(CartModel cartdata, ProductModel productdata){
 
                   // Product Color
                   Text(
-                    '${productdata.color[cartdata.color]['COLOR_NAME']} / ',
+                    '${productdata.color[cartdata.color]['COLOR_NAME']} | ',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
 

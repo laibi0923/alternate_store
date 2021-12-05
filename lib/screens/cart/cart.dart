@@ -10,6 +10,8 @@ import 'package:alternate_store/viewmodel/cart_viewmodel.dart';
 import 'package:alternate_store/widgets/cart/cart_itemview.dart';
 import 'package:alternate_store/widgets/cart/cart_summary_itemview.dart';
 import 'package:alternate_store/widgets/cart/empty_cart_screen.dart';
+import 'package:alternate_store/widgets/customize_phonetextfield.dart';
+import 'package:alternate_store/widgets/customize_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -26,11 +28,19 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
 
+  TextEditingController couponTextController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     final productlist = Provider.of<List<ProductModel>>(context, listen: false);
     Provider.of<CartViewModel>(context, listen: false).setCatList(productlist);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    couponTextController.dispose();
   }
 
   @override
@@ -75,7 +85,9 @@ class _CartState extends State<Cart> {
                 }
               )
             ),
-      
+
+            _buildCouponButton(),
+
             //  結帳按鈕
             _cartViewModel.getCartList.isEmpty ? Container() : _buildCheckbillButton()
   
@@ -88,9 +100,6 @@ class _CartState extends State<Cart> {
 
   Widget _buildSummary(){
 
-    final authService = Provider.of<AuthService>(context);
-    final couponModel = Provider.of<List<CouponModel>>(context);
-    final userCouponList = Provider.of<List<UserCouponModel>>(context);
     final _cartViewModel = Provider.of<CartViewModel>(context);
 
     return Padding(
@@ -105,14 +114,11 @@ class _CartState extends State<Cart> {
             showAddBox: false,
           ),
 
-          GestureDetector(
-            onTap: () => _cartViewModel.verifyDiscountCode(authService.isSignedIn, couponModel, userCouponList),
-            child: CartSummaryItemView(
-              title: _cartViewModel.discountCode.isEmpty ? '使用折扣代碼' : '折扣代碼【${_cartViewModel.discountCode}】', 
-              value: '-HKD\$ ' + _cartViewModel.discountAmount.toStringAsFixed(2),
-              isbold: false,
-              showAddBox: true,
-            ),
+          CartSummaryItemView(
+            title: _cartViewModel.discountCode.isEmpty ? '折扣' : '折扣代碼【${_cartViewModel.discountCode}】', 
+            value: '-HKD\$ ' + _cartViewModel.discountAmount.toStringAsFixed(2),
+            isbold: false,
+            showAddBox: false,
           ),
 
           CartSummaryItemView(
@@ -186,6 +192,36 @@ class _CartState extends State<Cart> {
           )
         );
       })
+    );
+  }
+
+  Widget _buildCouponButton(){
+
+    final authService = Provider.of<AuthService>(context);
+    final couponModel = Provider.of<List<CouponModel>>(context);
+    final userCouponList = Provider.of<List<UserCouponModel>>(context);
+    final cartViewModel = Provider.of<CartViewModel>(context);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.only(bottom: 10),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: const Color(cPrimaryColor),
+          elevation: 0,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(18)),
+          ),
+        ),
+        onPressed: () => cartViewModel.showDiscountBottomSheet(
+          context, 
+          authService.isSignedIn,
+          couponTextController, 
+          couponModel, 
+          userCouponList
+        ),
+        child: const Text('輸入優惠代碼')
+      ),
     );
   }
 
