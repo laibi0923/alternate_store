@@ -1,5 +1,4 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
-
 import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/model/coupon_model.dart';
 import 'package:alternate_store/model/product_model.dart';
@@ -59,6 +58,10 @@ class _CartState extends State<Cart> {
             ),
           ],
         ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(40),
+          child: _buildCouponButton()
+        ),
       ),
       body: _cartViewModel.getCartList.isEmpty ? 
       emptyCartScreen() : 
@@ -84,8 +87,6 @@ class _CartState extends State<Cart> {
               )
             ),
 
-            _buildCouponButton(),
-
             //  結帳按鈕
             _cartViewModel.getCartList.isEmpty ? Container() : _buildCheckbillButton()
   
@@ -104,7 +105,7 @@ class _CartState extends State<Cart> {
       padding: const EdgeInsets.only(bottom: 100),
       child: Column(
         children: [
-          
+
           CartSummaryItemView(
             title: '小計', 
             value: 'HKD\$ ' + _cartViewModel.subAmount.toStringAsFixed(2),
@@ -195,30 +196,35 @@ class _CartState extends State<Cart> {
 
   Widget _buildCouponButton(){
 
-    final authService = Provider.of<AuthService>(context);
-    final couponModel = Provider.of<List<CouponModel>>(context);
-    final userCouponList = Provider.of<List<UserCouponModel>>(context);
-    final cartViewModel = Provider.of<CartViewModel>(context);
+    final _authService = Provider.of<AuthService>(context);
+    final _couponModel = Provider.of<List<CouponModel>>(context);
+    final _userCouponList = Provider.of<List<UserCouponModel>>(context);
+    final _cartViewModel = Provider.of<CartViewModel>(context);
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.only(bottom: 10),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          primary: const Color(cPrimaryColor),
-          elevation: 0,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(18)),
-          ),
+
+    return InkWell(
+      splashColor: Colors.transparent,
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(cGrey),
+          borderRadius: BorderRadius.circular(7)
         ),
-        onPressed: () => cartViewModel.showDiscountBottomSheet(
-          context, 
-          authService.isSignedIn,
-          couponTextController, 
-          couponModel, 
-          userCouponList
+        margin: const EdgeInsets.only(left: 15, right: 15),
+        padding: const EdgeInsets.only(left: 15, right: 15, top: 10, bottom:10),
+        child: Row(
+          children: const [
+            Text('輸入優惠代碼'),
+            Spacer(),
+            Icon(Icons.arrow_right)
+          ],
         ),
-        child: const Text('輸入優惠代碼')
+      ),
+      onTap: () => _cartViewModel.showDiscountBottomSheet(
+        context, 
+        _authService.isSignedIn,
+        couponTextController, 
+        _couponModel, 
+        _userCouponList
       ),
     );
   }

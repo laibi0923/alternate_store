@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:convert';
-
 import 'package:alternate_store/constants.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
@@ -23,11 +22,12 @@ import 'package:alternate_store/widgets/custom_snackbar.dart';
 
 class CheckoutViewModel extends ChangeNotifier{
 
+  List<bool> expansionPanelOpenStatus = [false, false];
   Map<String, dynamic>? paymentIntentData;
-
   bool _saveShippingAddress = false;
-
   bool _showLoadingscreen = false;
+  String sfCode = '';
+  String sfLocation = '';
 
   bool get showloadingscreen{
     return _showLoadingscreen;
@@ -42,11 +42,13 @@ class CheckoutViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
+  //  儲存送貨地址狀態
   bool get shippingAddressStatus{
     return _saveShippingAddress;
   }
 
-  void setShippingAddress(){
+  //  儲存送貨地址
+  void saveShippingAddress(){
     if(_saveShippingAddress == true){
       _saveShippingAddress = false;
     } else {
@@ -55,6 +57,7 @@ class CheckoutViewModel extends ChangeNotifier{
     notifyListeners();
   }
   
+  //  建立支付
   Future<void> makePayment(BuildContext context, OrderModel orderModel, UserModel userInfo) async {
 
     //  判斷送貨地址
@@ -153,5 +156,13 @@ class CheckoutViewModel extends ChangeNotifier{
     }
   }
 
+  //  列表切換
+  void expansionPanelListToggler(int i, bool isOpen){
+     for(int i = 0; i < expansionPanelOpenStatus.length; i ++){
+      expansionPanelOpenStatus[i] = false;
+    }
+    expansionPanelOpenStatus[i] = !isOpen;
+    notifyListeners();
+  }
 
 }

@@ -13,7 +13,7 @@ const double xTextSize14 = 14;
 const double xTextSize11 = 11;
 
 //  商店名稱
-const String storeName = 'ALT STORE';
+const String storeName = 'COLLECTABLE';
 
 //  Mailbox : 歚迎加入標題
 const String welcomeMailboxTitle = '歡迎加入 $storeName';
