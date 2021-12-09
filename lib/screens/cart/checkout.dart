@@ -32,8 +32,7 @@ class _CheckOutState extends State<CheckOut> {
   final TextEditingController _unitEditingControlle = TextEditingController();
   final TextEditingController _estateEditingControlle = TextEditingController();
   final TextEditingController _districtEditingControlle = TextEditingController();
-
-  
+  Map<String, String> sfLockerLocation = {};
 
   @override
   void initState() {
@@ -258,8 +257,17 @@ class _CheckOutState extends State<CheckOut> {
               alignment: Alignment.topLeft,
               child: InkWell(
                 splashColor: Colors.transparent,
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SFLockerLocation())),
-                child: checkoutViewModel.sfCode.isEmpty ? 
+                onTap: () async {
+                  var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const SFLockerLocation()));
+                  
+                  if(result.isNotEmpty){
+                    setState(() {
+                      sfLockerLocation = result;
+                    });
+                  }
+
+                },
+                child: sfLockerLocation.isEmpty ? 
                 const Padding(
                   padding: EdgeInsets.all(15.0),
                   child: Center(
@@ -269,12 +277,18 @@ class _CheckOutState extends State<CheckOut> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'H852FG61P',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    Text(
+                      sfLockerLocation['code'].toString(),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Container(height: 5,),
-                    const Text('香港新界沙田區大圍美田路1號名城一期C層中轉大堂順豐智能櫃(只供住戶使用)'),
+                    Text(
+                      sfLockerLocation['location'].toString()
+                    ),
+                    Container(height: 10,),
+                    Text(
+                      sfLockerLocation['openingHour'].toString()
+                    ),
                   ],
                 ),
               ),
