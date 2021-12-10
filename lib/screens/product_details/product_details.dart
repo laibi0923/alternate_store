@@ -2,6 +2,7 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/model/product_model.dart';
+import 'package:alternate_store/screens/product_details/product_photoview.dart';
 import 'package:alternate_store/viewmodel/cart_viewmodel.dart';
 import 'package:alternate_store/viewmodel/productdetails_viewmodel.dart';
 import 'package:alternate_store/viewmodel/wishlist_viewmodel.dart';
@@ -12,8 +13,10 @@ import 'package:alternate_store/widgets/product_details/addtowish_circlebutton.d
 import 'package:alternate_store/widgets/product_details/close_circlebutton.dart';
 import 'package:alternate_store/widgets/product_details/product_image_counter.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetails extends StatefulWidget {
@@ -319,6 +322,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
 
+    final PageController _pageController = PageController(initialPage: 0);
     final _cartviewmodel = Provider.of<CartViewModel>(context);
     final _wishlistviewmodel = Provider.of<WishlistViewModel>(context);
     final _productDetailsViewModel = Provider.of<ProductDetailsViewModel>(context);
@@ -332,16 +336,30 @@ class _ProductDetailsState extends State<ProductDetails> {
           
           //  產品圖片
           PageView.builder(
+            controller: _pageController,
             physics: const BouncingScrollPhysics(),
             scrollDirection: Axis.vertical,
             itemCount: widget.productModel.imagePatch.length,
             onPageChanged: (index) => _productDetailsViewModel.updateImageIndex(index),
             itemBuilder: (context, index){
-              return SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: setCachedNetworkImage(
-                  widget.productModel.imagePatch[index], BoxFit.cover
-                )
+              return GestureDetector(
+                onTap: () async {
+                  var result = await Navigator.push(context, MaterialPageRoute(builder: (context){
+                    return ProductPhotoView(
+                      imageList: widget.productModel.imagePatch, 
+                      initPage: index
+                    );
+                  }));
+
+                  if(result != null){
+                    _pageController.jumpToPage(result.toInt());
+                  }
+
+                },
+                child: CachedNetworkImage(
+                  imageUrl: widget.productModel.imagePatch[index],
+                  fit: BoxFit.cover,
+                ),
               );
             }
           ),

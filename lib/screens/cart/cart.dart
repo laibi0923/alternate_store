@@ -60,7 +60,7 @@ class _CartState extends State<Cart> {
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(40),
-          child: _buildCouponButton()
+          child: _cartViewModel.getCartList.isEmpty ? Container() : _buildCouponButton()
         ),
       ),
       body: _cartViewModel.getCartList.isEmpty ? 

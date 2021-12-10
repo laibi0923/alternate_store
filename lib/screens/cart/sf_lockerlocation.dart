@@ -105,6 +105,7 @@ class _SFLockerLocationState extends State<SFLockerLocation> {
             ),
             Expanded(
                 child: TextField(
+                  textInputAction: TextInputAction.search,
                   controller: _searchTextController,
                   decoration: const InputDecoration(
                   border: InputBorder.none,
@@ -112,7 +113,7 @@ class _SFLockerLocationState extends State<SFLockerLocation> {
                   isDense: true,
                   hintText: '搜尋智能櫃',
                 ),
-                onChanged: (value) => _searchLocation(value)
+                onSubmitted: (value) => _searchLocation(value)
               )
             ),
             const Padding(

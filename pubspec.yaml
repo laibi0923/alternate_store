@@ -53,6 +53,7 @@ dependencies:
   http:
   mask_text_input_formatter:
   flutter_stripe:
+  photo_view:
   
 
 dev_dependencies:
