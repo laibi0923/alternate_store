@@ -189,7 +189,6 @@ class _SearchScreenState extends State<SearchScreen> {
     
   }
 
-
   Widget _productGridView(BuildContext context, List<ProductModel> list, int listLength){
 
     var size = MediaQuery.of(context).size;

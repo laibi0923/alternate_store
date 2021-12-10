@@ -87,7 +87,6 @@ class _HomeState extends State<Home> {
           child: IconButton(
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchScreen(searchKey: '')));
-              setState(() {});
             },
             icon: const Icon(Icons.search)
           ),
