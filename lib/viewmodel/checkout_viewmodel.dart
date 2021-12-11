@@ -188,67 +188,70 @@ class CheckoutViewModel extends ChangeNotifier{
   Future<void> newMakePayment(BuildContext context, UserModel userModel, OrderModel orderModel, String recipientName, String phone, String unit, String estate, String district) async {
 
     //  驗證資料
-    verifyRecipientData(context, userModel, recipientName, phone, unit, estate, district);
+    bool result = await verifyRecipientData(context, userModel, recipientName, phone, unit, estate, district);
 
-    setShowLoadingScreen();
+    if(result == true){
+      setShowLoadingScreen();
 
-    const url = 'https://us-central1-alternate-store.cloudfunctions.net/stripePayment';
+      const url = 'https://us-central1-alternate-store.cloudfunctions.net/stripePayment';
 
-    String amount = (orderModel.totalAmount * 100).toInt().toString();
+      String amount = (orderModel.totalAmount * 100).toInt().toString();
 
-    final http.Response response = await http.post(
-      Uri.parse('$url?amount=$amount&currency=HKD')
-    );
+      final http.Response response = await http.post(
+        Uri.parse('$url?amount=$amount&currency=HKD')
+      );
 
-    paymentIntentData = json.decode(response.body);
-    
-    await Stripe.instance.initPaymentSheet(
-      paymentSheetParameters: SetupPaymentSheetParameters(
-        paymentIntentClientSecret: paymentIntentData!['paymentIntent'],
-        applePay: true,
-        googlePay: true,
-        style: ThemeMode.light,
-        merchantCountryCode: 'HK',
-        merchantDisplayName: storeName,
-      )
-    );
-
-    try{
-      await Stripe.instance.presentPaymentSheet(
-        parameters: PresentPaymentSheetParameters(
-          clientSecret: paymentIntentData!['paymentIntent'],
-          confirmPayment: true
+      paymentIntentData = json.decode(response.body);
+      
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: paymentIntentData!['paymentIntent'],
+          applePay: true,
+          googlePay: true,
+          style: ThemeMode.light,
+          merchantCountryCode: 'HK',
+          merchantDisplayName: storeName,
         )
       );
-      paymentIntentData = null;
-      orderInformation(context, _userModel, orderModel, '信用卡');
-      setShowLoadingScreen();
-    } catch (e) {
-      // ignore: avoid_print
-      print(e.toString());
-      setShowLoadingScreen();
+
+      try{
+        await Stripe.instance.presentPaymentSheet(
+          parameters: PresentPaymentSheetParameters(
+            clientSecret: paymentIntentData!['paymentIntent'],
+            confirmPayment: true
+          )
+        );
+        paymentIntentData = null;
+        orderInformation(context, _userModel, orderModel, '信用卡');
+        setShowLoadingScreen();
+      } catch (e) {
+        // ignore: avoid_print
+        print(e.toString());
+        setShowLoadingScreen();
+      }
     }
+    
   }
 
   //  驗證資料
-  void verifyRecipientData(BuildContext context, UserModel userModel, String recipientName, String phone, String unit, String estate, String district){
+  Future<bool> verifyRecipientData(BuildContext context, UserModel userModel, String recipientName, String phone, String unit, String estate, String district) async {
 
     if(recipientName.trim().isEmpty){
       CustomSnackBar().show(context, '請選輸入收件人名稱');
-      return;
+      return false;
     }
     if(phone.trim().isEmpty){
       CustomSnackBar().show(context, '請輸入聯絡電話');
-      return;
+      return false;
     }
     if(expansionPanelOpenStatus[0] == false && expansionPanelOpenStatus[1] == false){
       CustomSnackBar().show(context, '請選擇送貨方式');
-      return;
+      return false;
     }
     if(expansionPanelOpenStatus[0]){
       if(_sfLockerLocation.isEmpty){
         CustomSnackBar().show(context, '請選擇智能櫃地點');
-        return;
+        return false;
       }
       _userModel = UserModel(
         userModel.lastModify, 
@@ -266,15 +269,15 @@ class CheckoutViewModel extends ChangeNotifier{
     if(expansionPanelOpenStatus[1]){
       if(unit.trim().isEmpty){
         CustomSnackBar().show(context, '請輸入單位或樓層');
-        return;
+        return false;
       }
       if(estate.trim().isEmpty){
         CustomSnackBar().show(context, '請輸入大廈名稱');
-        return;
+        return false;
       }
       if(district.trim().isEmpty){
         CustomSnackBar().show(context, '請輸入地區');
-        return;
+        return false;
       }
       _userModel = UserModel(
         userModel.lastModify, 
@@ -289,6 +292,7 @@ class CheckoutViewModel extends ChangeNotifier{
         recipientName
       );
     }
+    return true;
   }
 
 

@@ -8,16 +8,13 @@ import 'package:alternate_store/viewmodel/productdetails_viewmodel.dart';
 import 'package:alternate_store/viewmodel/wishlist_viewmodel.dart';
 import 'package:alternate_store/widgets/currency_textview.dart';
 import 'package:alternate_store/widgets/expand_text.dart';
-import 'package:alternate_store/widgets/product_details/addcart_button.dart';
 import 'package:alternate_store/widgets/product_details/addtowish_circlebutton.dart';
-import 'package:alternate_store/widgets/product_details/close_circlebutton.dart';
-import 'package:alternate_store/widgets/product_details/product_image_counter.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
+import 'dart:math' as math;
 
 class ProductDetails extends StatefulWidget {
   final ProductModel productModel; 
@@ -32,7 +29,6 @@ class _ProductDetailsState extends State<ProductDetails> {
   void _show(BuildContext context, CartViewModel cartViewModel, WishlistViewModel wishlistViewModel) {
 
     final _productViewModel = Provider.of<ProductDetailsViewModel>(context, listen: false);
-    
     int currentColor = 0;
     String colorName = widget.productModel.color[0]['COLOR_NAME'];
     int currentSize = 0;
@@ -335,65 +331,22 @@ class _ProductDetailsState extends State<ProductDetails> {
         children: [
           
           //  產品圖片
-          PageView.builder(
-            controller: _pageController,
-            physics: const BouncingScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            itemCount: widget.productModel.imagePatch.length,
-            onPageChanged: (index) => _productDetailsViewModel.updateImageIndex(index),
-            itemBuilder: (context, index){
-              return GestureDetector(
-                onTap: () async {
-                  var result = await Navigator.push(context, MaterialPageRoute(builder: (context){
-                    return ProductPhotoView(
-                      imageList: widget.productModel.imagePatch, 
-                      initPage: index
-                    );
-                  }));
-
-                  if(result != null){
-                    _pageController.jumpToPage(result.toInt());
-                  }
-
-                },
-                child: CachedNetworkImage(
-                  imageUrl: widget.productModel.imagePatch[index],
-                  fit: BoxFit.cover,
-                ),
-              );
-            }
-          ),
-
+          _productImagePageView(_pageController, _productDetailsViewModel),
+        
           //  關閉
-          closeCircleButton(context),
+          _closeCircleButton(),
 
           //  加入收藏清單
-          Positioned(
-            top: 42,
-            left: 15,
-            child: GestureDetector(
-              onTap: (){
-                _productDetailsViewModel.addWishList(widget.productModel, _wishlistviewmodel);
-              },
-              child: addToWishListButton(_productDetailsViewModel.onWishList)
-            )
-          ),
+          _addToWishListButton(_productDetailsViewModel, _wishlistviewmodel),
 
           //  加入購物車
-          Positioned(
-            bottom: 42,
-            child: GestureDetector(
-              onTap: () => _show(context, _cartviewmodel, _wishlistviewmodel),
-              child: addCartButton(context, widget.productModel),
-            ),
-          ),
-
+          _addToCartButton(_cartviewmodel, _wishlistviewmodel),
+      
           //  產品圖片計算器
-          productImageCount(
-            context,
-            (_productDetailsViewModel.imageIndex + 1).toString(), 
+          _productImageCounter(
+            (_productDetailsViewModel.imageIndex + 1).toString(),
             widget.productModel.imagePatch.length.toString()
-          ),
+          )
 
         ],
       ),
@@ -401,4 +354,153 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   }
 
+  Widget _productImagePageView(PageController pageController, ProductDetailsViewModel productDetailsViewModel){
+    return PageView.builder( 
+      controller: pageController,
+      physics: const BouncingScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      itemCount: widget.productModel.imagePatch.length,
+      onPageChanged: (index) => productDetailsViewModel.updateImageIndex(index),
+      itemBuilder: (context, index){
+        return GestureDetector(
+          onTap: () async {
+            var result = await Navigator.push(context, MaterialPageRoute(builder: (context){
+              return ProductPhotoView(
+                imageList: widget.productModel.imagePatch, 
+                initPage: index
+              );
+            }));
+
+            if(result != null){
+              pageController.jumpToPage(result.toInt());
+            }
+
+          },
+          child: CachedNetworkImage(
+            imageUrl: widget.productModel.imagePatch[index],
+            fit: BoxFit.cover,
+          ),
+        );
+      }
+    );
+  }
+
+  Widget _addToWishListButton(ProductDetailsViewModel productDetailsViewModel, WishlistViewModel wishlistViewModel){
+    return Positioned(
+      top: 60,
+      left: 15,
+      child: GestureDetector(
+        onTap: (){
+          productDetailsViewModel.addWishList(widget.productModel, wishlistViewModel);
+        },
+        child: Container(
+          height: 42,
+          width: 42,
+          padding: const EdgeInsets.all(8),
+          decoration:const BoxDecoration(
+            color: Color(0x90000000),
+            borderRadius: BorderRadius.all(
+              Radius.circular(99)
+            )
+          ),
+          child: Center(
+            child: Image(
+              image: productDetailsViewModel.onWishList == true ? const AssetImage('lib/assets/icon/ic_heart_fill.png') : const AssetImage('lib/assets/icon/ic_heart.png'),
+              color: productDetailsViewModel.onWishList == true ? Colors.redAccent : Colors.redAccent,
+            ),
+          )
+        ),
+      )
+    );
+  }
+
+  Widget _closeCircleButton(){
+    return Positioned(
+      top : 60,
+      right: 15,
+      child: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Container(
+          height: 42,
+          width: 42,
+          padding: const EdgeInsets.all(8),
+          decoration: const BoxDecoration(
+            color: Color(0x90000000),
+            borderRadius: BorderRadius.all(
+              Radius.circular(99)
+            ),
+          ),
+          child: const Icon(
+            Icons.close,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _addToCartButton(CartViewModel cartViewModel, WishlistViewModel wishlistViewModel){
+    return Positioned(
+      bottom: 42,
+      child: GestureDetector(
+        onTap: () => _show(context, cartViewModel, wishlistViewModel),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.only(left: 30, right: 30, top: 5, bottom: 5),
+              decoration: const BoxDecoration(
+                color: Color(0x90000000),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(99),
+                ),
+              ),
+              child: Column(
+                children: [
+                  CurrencyTextView(
+                    value: widget.productModel.discountPrice == 0 ? widget.productModel.price : widget.productModel.discountPrice, 
+                    textStyle: const TextStyle(color: Colors.white),
+                  ),
+                  const Text(
+                    '產品資訊',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _productImageCounter(String currentIndex, String totalImage){
+    return Positioned(
+      top: 0,
+      left: -15,
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: Center(
+          child: Transform(
+            alignment: FractionalOffset.center,
+            transform: Matrix4.rotationZ(-90 * math.pi / 180),
+            child: Container(
+              padding: const EdgeInsets.only(left: 30, right: 30, top: 5, bottom: 5),
+              decoration: const BoxDecoration(
+                color: Color(0x90000000),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(99)
+                )
+              ),
+              child: Text(
+                currentIndex + ' / ' + totalImage,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+      )
+    );
+  }
+  
 }
