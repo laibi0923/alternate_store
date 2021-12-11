@@ -8,7 +8,6 @@ import 'package:alternate_store/viewmodel/productdetails_viewmodel.dart';
 import 'package:alternate_store/viewmodel/wishlist_viewmodel.dart';
 import 'package:alternate_store/widgets/currency_textview.dart';
 import 'package:alternate_store/widgets/expand_text.dart';
-import 'package:alternate_store/widgets/product_details/addtowish_circlebutton.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

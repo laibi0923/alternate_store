@@ -1,4 +1,3 @@
-import 'package:alternate_store/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -27,7 +26,9 @@ class ProductPhotoView extends StatelessWidget {
               return CachedNetworkImage(
                 imageUrl: imageList[index],
                 imageBuilder: (context, imageProvider){
-                  return PhotoView(imageProvider: imageProvider);
+                  return PhotoView(
+                    imageProvider: imageProvider
+                  );
                 },
               );
             }
