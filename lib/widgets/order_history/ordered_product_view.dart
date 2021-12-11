@@ -53,7 +53,7 @@ Widget orderedProductView(Map<String, dynamic> orderProductData){
               const Spacer(),
 
               //  Refundable
-              orderProductModel.refundAble == false ? Container():
+              orderProductModel.refundAble == true ? Container():
               const Align(
                 alignment: Alignment.centerRight,
                 child: Text(
