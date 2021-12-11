@@ -369,7 +369,6 @@ class CartViewModel extends ChangeNotifier {
     Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) => !isLoggedIn ? 
       const UserEntrance(popBack: true) : 
       CheckOut(
-        userModel: userModel,
         orderModel: OrderModel(
           Timestamp.now(), 
           'OD${ServicesX().randomStringGender(10, false)}', 
