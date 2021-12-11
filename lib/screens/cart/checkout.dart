@@ -10,16 +10,14 @@ import 'package:alternate_store/widgets/currency_textview.dart';
 import 'package:alternate_store/widgets/customize_phonetextfield.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:alternate_store/widgets/customize_textfield.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:alternate_store/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CheckOut extends StatefulWidget {
-  final UserModel? userModel;
   final OrderModel? orderModel;
-  const CheckOut({Key? key, this.orderModel, this.userModel}) : super(key: key);
+  const CheckOut({Key? key, this.orderModel}) : super(key: key);
 
   @override
   State<CheckOut> createState() => _CheckOutState();
@@ -32,16 +30,20 @@ class _CheckOutState extends State<CheckOut> {
   final TextEditingController _unitEditingControlle = TextEditingController();
   final TextEditingController _estateEditingControlle = TextEditingController();
   final TextEditingController _districtEditingControlle = TextEditingController();
-  Map<String, String> sfLockerLocation = {};
 
   @override
   void initState() {
     super.initState();
-    _phoneEditingControlle.text = widget.userModel!.contactNo;
-    _userRecipientEditingControlle.text = widget.userModel!.recipientName;
-    _unitEditingControlle.text = widget.userModel!.unitAndBuilding;
-    _estateEditingControlle.text = widget.userModel!.estate;
-    _districtEditingControlle.text = widget.userModel!.district;
+
+    final _userModel = Provider.of<UserModel>(context, listen: false);
+    _phoneEditingControlle.text = _userModel.contactNo;
+    _userRecipientEditingControlle.text = _userModel.recipientName;
+    _unitEditingControlle.text = _userModel.unitAndBuilding;
+    _estateEditingControlle.text = _userModel.estate;
+    _districtEditingControlle.text = _userModel.district;
+
+    final checkoutViewModel = Provider.of<CheckoutViewModel>(context, listen: false);
+    checkoutViewModel.initData();
   }
 
   @override
@@ -56,7 +58,6 @@ class _CheckOutState extends State<CheckOut> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -102,8 +103,7 @@ class _CheckOutState extends State<CheckOut> {
                   ],
                 ),
               ),
-
-              _checkoutDetails(widget.userModel!)
+              _checkoutDetails()
             ],
           ),
 
@@ -131,8 +131,6 @@ class _CheckOutState extends State<CheckOut> {
     );
   }
 
-  
-
   Widget _showLoadingScreen(){
 
     final checkoutViewModel = Provider.of<CheckoutViewModel>(context);
@@ -147,89 +145,6 @@ class _CheckOutState extends State<CheckOut> {
       ),
     ) : 
     Container();
-  }
-
-  Widget _checkoutDetails(UserModel userInfo){
-
-    final checkoutViewModel = Provider.of<CheckoutViewModel>(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-
-        //  Total payment amount
-        const Padding(
-          padding: EdgeInsets.only(top: 10),
-          child: Center(
-            child: Text(
-              '付款總額',
-              style: TextStyle(
-                fontSize: xTextSize18, 
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-        
-        Padding(
-          padding: const EdgeInsets.only(bottom: 5),
-          child: Center(
-            child: CurrencyTextView(
-              value: widget.orderModel!.totalAmount, 
-              textStyle: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-              // textAlign: TextAlign.center
-            ),
-          )
-        ),
-
-        // Center(
-        //   child: SizedBox(
-        //     height: 50,
-        //     child: setCachedNetworkImage(
-        //       'https://logodix.com/logo/797210.png',
-        //       BoxFit.cover
-        //     ),
-        //   ),
-        // ),
-        
-        Padding(
-          padding: const EdgeInsets.only(left: 15, right: 15),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: const Color(cPrimaryColor),
-              elevation: 0,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(18)),
-              ),
-            ),
-            onPressed: () {
-              UserModel usermodel = UserModel(
-                Timestamp.now(),
-                userInfo.uid,
-                userInfo.email,
-                userInfo.name, 
-                _phoneEditingControlle.text, 
-                _unitEditingControlle.text, 
-                _estateEditingControlle.text, 
-                _districtEditingControlle.text, 
-                '', 
-                _userRecipientEditingControlle.text
-              );
-              checkoutViewModel.makePayment(
-                context,
-                widget.orderModel!,
-                usermodel
-              );
-            },
-            child: const Text('輸入信用卡付款')
-          ),
-        ),
-
-        Container(height: 30)
-      ],
-    );
   }
 
   Widget _expansionPanelList(){
@@ -261,13 +176,14 @@ class _CheckOutState extends State<CheckOut> {
                   var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const SFLockerLocation()));
                   
                   if(result.isNotEmpty){
-                    setState(() {
-                      sfLockerLocation = result;
-                    });
+                    checkoutViewModel.setSFLockerLocation(result);
+                    // setState(() {
+                    //   sfLockerLocation = result;
+                    // });
                   }
 
                 },
-                child: sfLockerLocation.isEmpty ? 
+                child: checkoutViewModel.getSFLockerLocation().isEmpty ? 
                 const Padding(
                   padding: EdgeInsets.all(15.0),
                   child: Center(
@@ -278,43 +194,22 @@ class _CheckOutState extends State<CheckOut> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      sfLockerLocation['code'].toString(),
+                      checkoutViewModel.getSFLockerLocation()['code'].toString(),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Container(height: 5,),
                     Text(
-                      sfLockerLocation['location'].toString()
+                      checkoutViewModel.getSFLockerLocation()['location'].toString()
                     ),
                     Container(height: 10,),
                     Text(
-                      sfLockerLocation['openingHour'].toString()
+                      checkoutViewModel.getSFLockerLocation()['openingHour'].toString()
                     ),
                   ],
                 ),
               ),
             )
           ),
-
-          // ExpansionPanel(
-          //   canTapOnHeader: true,
-          //   isExpanded: _isOpen[1],
-          //   headerBuilder: (context, isOpen){
-          //     return const Align(
-          //       alignment: Alignment.centerLeft,
-          //       child: Text('7-ELEVEN 交貨便')
-          //     );
-          //   },
-          //   body: Align(
-          //     alignment: Alignment.topLeft,
-          //     child: Column(
-          //       children: const [
-          //         Text('Test content 1'),
-          //         Text('Test content 1'),
-          //         Text('Test content 1'),
-          //       ],
-          //     ),
-          //   )
-          // ),
 
           ExpansionPanel(
             canTapOnHeader: true,
@@ -388,4 +283,71 @@ class _CheckOutState extends State<CheckOut> {
     );
   }
 
-}
+  Widget _checkoutDetails(){
+
+    final checkoutViewModel = Provider.of<CheckoutViewModel>(context);
+    final _userModel = Provider.of<UserModel>(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+
+        const Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Center(
+            child: Text(
+              '付款總額',
+              style: TextStyle(
+                fontSize: xTextSize18, 
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        
+        Padding(
+          padding: const EdgeInsets.only(bottom: 5),
+          child: Center(
+            child: CurrencyTextView(
+              value: widget.orderModel!.totalAmount, 
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+              // textAlign: TextAlign.center
+            ),
+          )
+        ),
+    
+        Padding(
+          padding: const EdgeInsets.only(left: 15, right: 15),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: const Color(cPrimaryColor),
+              elevation: 0,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(18)),
+              ),
+            ),
+            onPressed: () {
+              checkoutViewModel.newMakePayment(
+                context, 
+                _userModel,
+                widget.orderModel!,
+                _userRecipientEditingControlle.text, 
+                _phoneEditingControlle.text, 
+                _unitEditingControlle.text, 
+                _estateEditingControlle.text, 
+                _districtEditingControlle.text
+              );
+
+            },
+            child: const Text('輸入信用卡付款')
+          ),
+        ),
+
+        Container(height: 30)
+      ],
+    );
+  }
+
+} 
