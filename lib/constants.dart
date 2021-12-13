@@ -1,4 +1,5 @@
-const cPrimaryColor = 0xFFBCDBFF;
+// const cPrimaryColor = 0xFFBCDBFF;
+const cPrimaryColor = 0xFFa0a0f0;
 const cBackgroundColor = 0xFFFFFFFF;
 const cGrey = 0xFFF9F9F9;
 const cDark = 0xFF5B5E61;

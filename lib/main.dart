@@ -2,6 +2,8 @@
 // ignore_for_file: missing_required_param
 
 import 'package:alternate_store/constants.dart';
+import 'package:alternate_store/model/product_model.dart';
+import 'package:alternate_store/screens/product_details/product_details.dart';
 import 'package:alternate_store/screens/splash_page.dart';
 import 'package:alternate_store/service/auth_database.dart';
 import 'package:alternate_store/service/auth_services.dart';
@@ -24,10 +26,11 @@ import 'package:alternate_store/viewmodel/wishlist_viewmodel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' ;
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_links/uni_links.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,11 +54,18 @@ Future<void> main() async {
 //  
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({key}) : super(key: key);
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
   Widget build(BuildContext context) {
+
     final authService = Provider.of<AuthService>(context);
 
     //  強制直屏
@@ -192,6 +202,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
         home: const SplashPage(),
+        routes: {
+          '/productdetails' : (context) => const ProductDetails(),
+        }
       ),
     );
   }

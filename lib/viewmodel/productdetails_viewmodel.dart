@@ -7,6 +7,7 @@ import 'package:alternate_store/model/product_model.dart';
 import 'package:alternate_store/model/wishlist_model.dart';
 import 'package:alternate_store/viewmodel/wishlist_viewmodel.dart';
 import 'package:alternate_store/viewmodel/cart_viewmodel.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ProductDetailsViewModel extends ChangeNotifier{
 
@@ -20,12 +21,13 @@ class ProductDetailsViewModel extends ChangeNotifier{
     onWishList = false;
   }
 
+  //  Update image index when user scoll image pageview
   void updateImageIndex(int index){
     imageIndex = index;
     notifyListeners();
   }
  
-  //  Check wishlist or not
+  //  Check on wishlist or not
   void checkOnWishlist(List<WishListModel> wishlist, String productNo){
     if(wishlist.isNotEmpty){
       for(int i = 0; i < wishlist.length; i++){
@@ -63,17 +65,11 @@ class ProductDetailsViewModel extends ChangeNotifier{
     }
   }
 
-  // void setCurrentSize(int index){
-  //   currentSize = index;
-  //   print('currentSize: $currentSize');
-  //   notifyListeners();
-  // }
-
-  // void setCurrentColor(int index, String colorName){
-  //   this.colorName = colorName;
-  //   currentColor = index;
-  //   notifyListeners();
-  // }
+  //  Share product information to social media
+  Future<void> sharedProductDetails(String imageUri, String uri) async {
+    //  TODO shared product to outside
+    await Share.share('Testing : \n\n $imageUri \n\n $uri');
+  }
 
 
 

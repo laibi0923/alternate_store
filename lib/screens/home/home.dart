@@ -33,6 +33,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: NestedScrollView(
+      physics: const BouncingScrollPhysics(),
       floatHeaderSlivers: false,
       headerSliverBuilder: (content, innerBoxIsScrolled) => [
         _appBar(context) 
@@ -43,7 +44,6 @@ class _HomeState extends State<Home> {
       ) :
       ListView(
         shrinkWrap: true,
-        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.only(left: 20, right: 20),
         children: [
 

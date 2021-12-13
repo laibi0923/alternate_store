@@ -25,11 +25,13 @@ class ProductDetails extends StatefulWidget {
 
 class _ProductDetailsState extends State<ProductDetails> {
 
+  late ProductModel productModel;
+
   void _show(BuildContext context, CartViewModel cartViewModel, WishlistViewModel wishlistViewModel) {
 
     final _productViewModel = Provider.of<ProductDetailsViewModel>(context, listen: false);
     int currentColor = 0;
-    String colorName = widget.productModel.color[0]['COLOR_NAME'];
+    String colorName = productModel.color[0]['COLOR_NAME'];
     int currentSize = 0;
 
     showModalBottomSheet(
@@ -71,11 +73,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                       children: [
 
                         //  Name
-                        widget.productModel.productName.trim() == '' ? Container() :
+                        productModel.productName.trim() == '' ? Container() :
                         Padding(
                           padding: const EdgeInsets.only(left: 20, right: 20, top: 40),
                           child: Text(
-                            widget.productModel.productName,
+                            productModel.productName,
                             style: const TextStyle(
                               fontSize: xTextSize18, 
                               fontWeight: FontWeight.bold
@@ -84,11 +86,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                         ),
                                 
                         //  Product No.
-                        widget.productModel.productName.trim() == '' ? Container() :
+                        productModel.productName.trim() == '' ? Container() :
                         Padding(
                           padding: const EdgeInsets.only(left: 20, right: 20),
                           child: Text(
-                            widget.productModel.productNo,
+                            productModel.productNo,
                             style: const TextStyle(
                               color: Colors.grey
                             ),
@@ -96,11 +98,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                         ),
                         
                         //  Description
-                        widget.productModel.description.trim() == '' ? Container() :
-                        ExpandText(content: widget.productModel.description),
+                        productModel.description.trim() == '' ? Container() :
+                        ExpandText(content: productModel.description),
 
                         //  Price
-                        widget.productModel.price == null ? Container() :
+                        productModel.price == null ? Container() :
                         Padding(
                           padding: const EdgeInsets.only(left: 20, right: 20),
                           child: Row(
@@ -109,19 +111,19 @@ class _ProductDetailsState extends State<ProductDetails> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 20, right: 20),
                                 child: CurrencyTextView(
-                                  value: widget.productModel.price, 
+                                  value: productModel.price, 
                                   textStyle: TextStyle(
-                                    fontSize: widget.productModel.discountPrice == 0 ? xTextSize18 : xTextSize14, 
-                                    decoration: widget.productModel.discountPrice == 0 ?  null : TextDecoration.lineThrough
+                                    fontSize: productModel.discountPrice == 0 ? xTextSize18 : xTextSize14, 
+                                    decoration: productModel.discountPrice == 0 ?  null : TextDecoration.lineThrough
                                   ),
                                 ),
                               ),
                     
-                              widget.productModel.discountPrice == 0 ? Container() :
+                              productModel.discountPrice == 0 ? Container() :
                               Padding(
                                 padding: const EdgeInsets.only(top: 20),
                                 child: CurrencyTextView(
-                                  value: widget.productModel.discountPrice, 
+                                  value: productModel.discountPrice, 
                                   textStyle: const TextStyle(
                                     fontSize: xTextSize18, 
                                     color: Color(cPink)
@@ -142,7 +144,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         //  Refundable
                         Padding(
                           padding: const EdgeInsets.only(left: 20, right: 20),
-                          child: widget.productModel.refundable == true ? Container() :
+                          child: productModel.refundable == true ? Container() :
                           const Text(
                             refundableText,
                             style: TextStyle(color: Color(cPink)),
@@ -150,7 +152,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         ),
 
                         //  Size
-                        widget.productModel.size == null ? Container() :
+                        productModel.size == null ? Container() :
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -167,7 +169,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               child: ListView.builder(
                                 physics: const BouncingScrollPhysics(),
                                 scrollDirection: Axis.horizontal,
-                                itemCount: widget.productModel.size.length,
+                                itemCount: productModel.size.length,
                                 itemBuilder: (context, index){
                                   return GestureDetector(
                                     onTap: () {
@@ -193,7 +195,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                           ),
                                           child: Center(
                                             child: Text(
-                                              widget.productModel.size[index],
+                                              productModel.size[index],
                                               style: TextStyle(
                                                 color: index == currentSize ? Colors.black : Colors.black
                                               ),
@@ -210,7 +212,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         ),
                                 
                         // Color
-                        widget.productModel.color == null ? Container() :
+                        productModel.color == null ? Container() :
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -226,12 +228,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                               margin: const EdgeInsets.only(top: 15, bottom: 15),
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                itemCount: widget.productModel.color.length,
+                                itemCount: productModel.color.length,
                                 itemBuilder: (context, index){
                                   return GestureDetector(
                                     onTap: (){
                                       currentColor = index;
-                                      colorName = widget.productModel.color[index]['COLOR_NAME'];
+                                      colorName = productModel.color[index]['COLOR_NAME'];
                                       mystate((){});
                                     },
                                     child: Container(
@@ -255,7 +257,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                             height: 45,
                                             width: 45,
                                             child:  ClipRRect(borderRadius: BorderRadius.circular(99),
-                                              child: setCachedNetworkImage(widget.productModel.color[index]['COLOR_IMAGE'], BoxFit.cover)
+                                              child: setCachedNetworkImage(productModel.color[index]['COLOR_IMAGE'], BoxFit.cover)
                                             ),
                                           )
                                         ),
@@ -289,7 +291,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       onPressed: () => _productViewModel.addCart(
                         cartViewModel,
                         wishlistViewModel,
-                        widget.productModel,
+                        productModel,
                         currentSize, 
                         currentColor
                       ),
@@ -322,7 +324,14 @@ class _ProductDetailsState extends State<ProductDetails> {
     final _wishlistviewmodel = Provider.of<WishlistViewModel>(context);
     final _productDetailsViewModel = Provider.of<ProductDetailsViewModel>(context);
     final wishlist = _wishlistviewmodel.getSharedPerferencesCartList;
-    _productDetailsViewModel.checkOnWishlist(wishlist, widget.productModel.productNo);
+
+    if(widget.productModel == null){
+      productModel = ModalRoute.of(context)!.settings.arguments as ProductModel;
+    } else {
+      productModel = widget.productModel;
+    }
+
+    _productDetailsViewModel.checkOnWishlist(wishlist, productModel.productNo);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -344,8 +353,11 @@ class _ProductDetailsState extends State<ProductDetails> {
           //  產品圖片計算器
           _productImageCounter(
             (_productDetailsViewModel.imageIndex + 1).toString(),
-            widget.productModel.imagePatch.length.toString()
-          )
+            productModel.imagePatch.length.toString()
+          ),
+
+          //  分享
+          _sharedButton(_productDetailsViewModel),
 
         ],
       ),
@@ -358,14 +370,14 @@ class _ProductDetailsState extends State<ProductDetails> {
       controller: pageController,
       physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.vertical,
-      itemCount: widget.productModel.imagePatch.length,
+      itemCount: productModel.imagePatch.length,
       onPageChanged: (index) => productDetailsViewModel.updateImageIndex(index),
       itemBuilder: (context, index){
         return GestureDetector(
           onTap: () async {
             var result = await Navigator.push(context, MaterialPageRoute(builder: (context){
               return ProductPhotoView(
-                imageList: widget.productModel.imagePatch, 
+                imageList: productModel.imagePatch, 
                 initPage: index
               );
             }));
@@ -376,7 +388,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
           },
           child: CachedNetworkImage(
-            imageUrl: widget.productModel.imagePatch[index],
+            imageUrl: productModel.imagePatch[index],
             fit: BoxFit.cover,
           ),
         );
@@ -390,7 +402,7 @@ class _ProductDetailsState extends State<ProductDetails> {
       left: 15,
       child: GestureDetector(
         onTap: (){
-          productDetailsViewModel.addWishList(widget.productModel, wishlistViewModel);
+          productDetailsViewModel.addWishList(productModel, wishlistViewModel);
         },
         child: Container(
           height: 42,
@@ -457,7 +469,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               child: Column(
                 children: [
                   CurrencyTextView(
-                    value: widget.productModel.discountPrice == 0 ? widget.productModel.price : widget.productModel.discountPrice, 
+                    value: productModel.discountPrice == 0 ? productModel.price : productModel.discountPrice, 
                     textStyle: const TextStyle(color: Colors.white),
                   ),
                   const Text(
@@ -502,4 +514,31 @@ class _ProductDetailsState extends State<ProductDetails> {
     );
   }
   
+  Widget _sharedButton(ProductDetailsViewModel productDetailsViewModel){
+    return Positioned(
+      bottom: 42,
+      right: 15,
+      child: GestureDetector(
+        // onTap: () => productDetailsViewModel.sharedProductDetails('collectable43424://productdetails?name=${productModel.productNo}'),
+        onTap: () => productDetailsViewModel.sharedProductDetails(
+          productModel.imagePatch[0],
+          'collectable43424://productdetails?name=${productModel.productNo}'
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: const BoxDecoration(
+            color: Color(0x90000000),
+            borderRadius: BorderRadius.all(
+              Radius.circular(99)
+            ),
+          ),
+          child: const Icon(
+            Icons.ios_share,
+            color: Colors.white
+          )
+        ),
+      )
+    );
+  }
+
 }
