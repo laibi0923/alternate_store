@@ -163,9 +163,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<SettingViewModel>(
           create: (context) => SettingViewModel()
         ),
-
         
-
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

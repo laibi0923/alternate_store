@@ -49,7 +49,14 @@ class _SFLockerLocationState extends State<SFLockerLocation> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildSearchAppbar(context),
-      body: ListView.builder(
+      body:  _resultList.isEmpty ? 
+      const Center(
+        child: Text(
+          '找不到你所輸入的智能櫃',
+          style: TextStyle(color: Colors.grey),
+        )
+      ) :
+      ListView.builder(
         itemCount: _resultList.length,
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 150),
         itemBuilder: (context, index){
