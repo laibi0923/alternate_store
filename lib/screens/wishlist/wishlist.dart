@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:alternate_store/model/product_model.dart';
 import 'package:alternate_store/screens/search_center/search_page.dart';
 import 'package:alternate_store/viewmodel/wishlist_viewmodel.dart';
-import 'package:alternate_store/widgets/product_gridview.dart';
 import 'package:alternate_store/widgets/wishlist/empty_wishlist_screen.dart';
 
 class WishList extends StatefulWidget {

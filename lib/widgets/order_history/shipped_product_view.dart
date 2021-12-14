@@ -7,11 +7,11 @@ import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 
 
-Widget shippedProductView(Map<String, dynamic> shippedProductData, String productNumber){
+Widget shippedProductView(OrderProductModel shippedProductData, String productNumber){
 
-  OrderProductModel _orderProductModel = OrderProductModel.fromFirestore(shippedProductData);
+  // OrderProductModel shippedProductData = OrderProductModel.fromFirestore(shippedProductData);
 
-  return _orderProductModel.shippingStatus == '' ?  Container() :
+  return shippedProductData.shippingStatus == '' ?  Container() :
   Container(
     height: 150,
     margin: const EdgeInsets.only(top: 10, bottom: 10),
@@ -31,7 +31,7 @@ Widget shippedProductView(Map<String, dynamic> shippedProductData, String produc
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: setCachedNetworkImage(
-              _orderProductModel.colorImage,
+              shippedProductData.colorImage,
               BoxFit.cover
             )
           ),
@@ -55,7 +55,7 @@ Widget shippedProductView(Map<String, dynamic> shippedProductData, String produc
                   Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      _orderProductModel.shippingStatus,
+                      shippedProductData.shippingStatus,
                       style: const TextStyle(color: Color(cPrimaryColor)),
                     ),
                   ) 
@@ -67,7 +67,7 @@ Widget shippedProductView(Map<String, dynamic> shippedProductData, String produc
               Padding(
                 padding: const EdgeInsets.only(bottom: 5),
                 child: Text(
-                  _orderProductModel.productName,
+                  shippedProductData.productName,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: const TextStyle(fontWeight: FontWeight.bold),
@@ -77,7 +77,7 @@ Widget shippedProductView(Map<String, dynamic> shippedProductData, String produc
               const Spacer(),
 
               //  Refund
-              _orderProductModel.refundAble == true ? Container() :
+              shippedProductData.refundAble == true ? Container() :
               const Align(
                 alignment: Alignment.centerRight,
                 child: Text(
@@ -89,7 +89,7 @@ Widget shippedProductView(Map<String, dynamic> shippedProductData, String produc
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  _orderProductModel.refundStatus,
+                  shippedProductData.refundStatus,
                   style: const TextStyle(color: Color(cPink)),
                 ),
               ),
@@ -101,13 +101,13 @@ Widget shippedProductView(Map<String, dynamic> shippedProductData, String produc
 
                   // Product Color
                   Text(
-                    '${_orderProductModel.colorName} / ',
+                    '${shippedProductData.colorName} / ',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
 
                   //  Product Size
                   Text(
-                    _orderProductModel.size,
+                    shippedProductData.size,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
 
@@ -118,9 +118,9 @@ Widget shippedProductView(Map<String, dynamic> shippedProductData, String produc
                       children:  [
                         
                         // 判斷如商品冇特價時不顯示, 相反則顥示正價 (刪除線)
-                        _orderProductModel.discount == 0 ? Container() :
+                        shippedProductData.discount == 0 ? Container() :
                         CurrencyTextView(
-                          value: _orderProductModel.price, 
+                          value: shippedProductData.price, 
                           textStyle: const TextStyle(
                             fontSize: xTextSize11,
                             decoration: TextDecoration.lineThrough
@@ -128,16 +128,16 @@ Widget shippedProductView(Map<String, dynamic> shippedProductData, String produc
                         ),
                         
                         //  判斷如商品冇特價時顯示正價, 相反以紅色顯示特價銀碼
-                        _orderProductModel.discount != 0 ?
+                        shippedProductData.discount != 0 ?
                         CurrencyTextView(
-                          value: _orderProductModel.discount, 
+                          value: shippedProductData.discount, 
                           textStyle: const TextStyle(
                             fontSize: xTextSize14,
                             color: Color(cPink)
                           ),
                         ) :
                         CurrencyTextView(
-                          value: _orderProductModel.price, 
+                          value: shippedProductData.price, 
                           textStyle: const TextStyle()
                         )
                 

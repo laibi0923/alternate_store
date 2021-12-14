@@ -1,6 +1,7 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 
 import 'package:alternate_store/model/order_product_model.dart';
+import 'package:alternate_store/viewmodel/refundhistory_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:alternate_store/constants.dart';
@@ -125,58 +126,32 @@ class RefundHistory extends StatelessWidget {
   Widget _buildRefundListView(BuildContext context){
 
     final orderHistoryList = Provider.of<List<OrderModel>>(context);
+    final refundProductViewModel = Provider.of<RefundProductViewModel>(context);
 
+    // ignore: unnecessary_null_comparison
     if(orderHistoryList == null){
       return const Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator()
       );
+    } else {
+      refundProductViewModel.findRefundproduct(orderHistoryList);
     }
 
-    if(orderHistoryList.isEmpty){
+    if(refundProductViewModel.refundProductList.isEmpty){
       return const Center(
-        child: Text(
-          '尚未有任何退貨紀錄',
-          style: TextStyle(color: Colors.grey),
-        ),
+        child: Text('沒有退貨紀錄'),
       );
     }
 
-    bool haveRefund = false;
-
-    if(haveRefund == false){
-      return const Center(
-        child: Text(
-          '尚未有任何退貨紀錄',
-          style: TextStyle(color: Colors.grey),
-        ),
-      );
-    }
-    //  TODO Redesign *********
     return ListView.builder(
-      physics: const BouncingScrollPhysics(),
-      itemCount: orderHistoryList.length,
+      itemCount: refundProductViewModel.refundProductList.length,
       itemBuilder: (context, index){
-        return ListView.builder(
-          itemCount: orderHistoryList[index].orderProduct.length,
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          itemBuilder: (context, zindex){
-
-            OrderProductModel _orderProductModel = OrderProductModel.fromFirestore(orderHistoryList[index].orderProduct[zindex]);
-            if(_orderProductModel.refundStatus.isNotEmpty){
-              haveRefund = true;
-            }
-            return _orderProductModel.refundStatus != '已退貨' ?  Container() :
-            _buildRefundItem(
-              orderHistoryList[index],
-              _orderProductModel
-            );
-          }
+        return _buildRefundItem(
+          orderHistoryList[index],
+          refundProductViewModel.refundProductList[index]
         );
       }
     );
+
   }
-
-
 }

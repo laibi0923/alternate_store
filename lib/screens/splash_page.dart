@@ -1,10 +1,8 @@
 // @dart=2.9
-import 'package:alternate_store/model/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:alternate_store/constants.dart';
 import 'package:alternate_store/screens/screen_wrapper.dart';
-import 'package:provider/provider.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({ key }) : super(key: key);

@@ -33,8 +33,8 @@ class OrderProductModel {
   OrderProductModel.fromFirestore(Map<String, dynamic> json) :
     colorName = json['COLOR_NAME'],
     colorImage = json['COLOR_IMAGE'],
-    discount = json['DISCOUNT'],
-    price = json['PRICE'],
+    discount = double.parse(json['DISCOUNT'].toString()),
+    price = double.parse(json['PRICE'].toString()),
     productImage = json['PRODUCT_IMAGE'],
     productName = json['PRODUCT_NAME'],
     productNo = json['PRODUCT_NO'],

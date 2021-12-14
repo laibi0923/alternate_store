@@ -325,6 +325,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     final _productDetailsViewModel = Provider.of<ProductDetailsViewModel>(context);
     final wishlist = _wishlistviewmodel.getSharedPerferencesCartList;
 
+    // ignore: unnecessary_null_comparison
     if(widget.productModel == null){
       productModel = ModalRoute.of(context)!.settings.arguments as ProductModel;
     } else {

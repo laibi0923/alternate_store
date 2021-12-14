@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'package:alternate_store/constants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';

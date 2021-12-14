@@ -28,6 +28,7 @@ Widget productGridView(BuildContext context, List<ProductModel> list, int listLe
     ),  
     itemBuilder: (context, index){
       
+        // ignore: unnecessary_null_comparison
         return list.isEmpty || list == null || list.length <= index ?
         Container(
           height: itemWidth - 30,

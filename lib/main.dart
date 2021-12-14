@@ -2,7 +2,6 @@
 // ignore_for_file: missing_required_param
 
 import 'package:alternate_store/constants.dart';
-import 'package:alternate_store/model/product_model.dart';
 import 'package:alternate_store/screens/product_details/product_details.dart';
 import 'package:alternate_store/screens/splash_page.dart';
 import 'package:alternate_store/service/auth_database.dart';
@@ -20,8 +19,10 @@ import 'package:alternate_store/viewmodel/checkout_viewmodel.dart';
 import 'package:alternate_store/viewmodel/homescreen_viewmodel.dart';
 import 'package:alternate_store/viewmodel/mailbox_viewmodel.dart';
 import 'package:alternate_store/viewmodel/productdetails_viewmodel.dart';
+import 'package:alternate_store/viewmodel/refundhistory_viewmodel.dart';
 import 'package:alternate_store/viewmodel/searchpage_viewmodel.dart';
 import 'package:alternate_store/viewmodel/setting_viewmodel.dart';
+import 'package:alternate_store/viewmodel/shipped_viewmodel.dart';
 import 'package:alternate_store/viewmodel/wishlist_viewmodel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,7 +31,6 @@ import 'package:flutter/services.dart' ;
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links/uni_links.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -162,6 +162,14 @@ class _MyAppState extends State<MyApp> {
 
         ChangeNotifierProvider<SettingViewModel>(
           create: (context) => SettingViewModel()
+        ),
+
+        ChangeNotifierProvider<RefundProductViewModel>(
+          create: (context) => RefundProductViewModel()
+        ),
+
+        ChangeNotifierProvider<ShippedViewModel>(
+          create: (context) => ShippedViewModel()
         ),
         
       ],

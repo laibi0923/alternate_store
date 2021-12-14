@@ -6,7 +6,6 @@ import 'package:alternate_store/model/product_model.dart';
 import 'package:alternate_store/screens/product_details/product_details.dart';
 import 'package:alternate_store/viewmodel/searchpage_viewmodel.dart';
 import 'package:alternate_store/widgets/currency_textview.dart';
-import 'package:alternate_store/widgets/product_gridview.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -209,6 +208,7 @@ class _SearchScreenState extends State<SearchScreen> {
         childAspectRatio: (itemWidth / itemHeight)
       ),  
       itemBuilder: (context, index){
+        // ignore: unnecessary_null_comparison
         return tempList.isEmpty || tempList == null || tempList.length <= index ?
         Container(
           height: itemWidth - 30,

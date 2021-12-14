@@ -58,7 +58,7 @@ class _ScreenWarpperState extends State<ScreenWarpper> {
     }
 
     // App開啟的狀態監聽scheme
-    getLinksStream().listen((String link) {
+    linkStream.listen((String link) {
       if (!mounted || link == null) {
         return;
       } else {

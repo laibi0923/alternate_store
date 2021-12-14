@@ -6,7 +6,6 @@ import 'package:alternate_store/screens/product_details/product_details.dart';
 import 'package:alternate_store/screens/search_center/search_page.dart';
 import 'package:alternate_store/viewmodel/homescreen_viewmodel.dart';
 import 'package:alternate_store/widgets/currency_textview.dart';
-import 'package:alternate_store/widgets/product_gridview.dart';
 import 'package:alternate_store/widgets/set_cachednetworkimage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
