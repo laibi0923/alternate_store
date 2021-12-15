@@ -31,9 +31,10 @@ class _SplashPageState extends State<SplashPage> {
       body: Center(
         child: Text(
           storeName, 
-          style: GoogleFonts.alata(
+          style: GoogleFonts.alice (
             fontSize: 40,
-            color: Colors.white
+            color: Colors.white,
+            fontWeight: FontWeight.bold
           )
         ),
       ),

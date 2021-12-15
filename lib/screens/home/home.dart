@@ -76,7 +76,7 @@ class _HomeState extends State<Home> {
       centerTitle: true,
       title: Text(
         storeName,
-        style: GoogleFonts.alata(
+        style: GoogleFonts.alice(
           fontWeight: FontWeight.bold
         )
       ),
