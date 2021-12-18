@@ -15,7 +15,7 @@ Widget userImage(String imageUri) {
       borderRadius: BorderRadius.circular(999),
     ),
     child: Image.asset(
-      'lib/assets/icon/ic_person.png',
+      'assets/icon/ic_person.png',
       fit: BoxFit.cover,
     ),
   ) :

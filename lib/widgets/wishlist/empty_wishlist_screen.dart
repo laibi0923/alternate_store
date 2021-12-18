@@ -20,7 +20,7 @@ Widget emptyWishlistScreen(BuildContext context) {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset(
-              'lib/assets/icon/ic_heart.png', 
+              'assets/icon/ic_heart.png', 
               color: Colors.grey,
             ),
 

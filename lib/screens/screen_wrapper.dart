@@ -162,7 +162,7 @@ class _ScreenWarpperState extends State<ScreenWarpper> {
           ),
           const BottomNavigationBarItem(
             label: '',
-            icon: ImageIcon(AssetImage('lib/assets/icon/ic_heart.png')),
+            icon: ImageIcon(AssetImage('assets/icon/ic_heart.png')),
           ),
           BottomNavigationBarItem(
             label: '',
@@ -177,7 +177,7 @@ class _ScreenWarpperState extends State<ScreenWarpper> {
               })(),
                 style: const TextStyle(color: Colors.white, fontSize: 10)
               ),
-              child: const ImageIcon(AssetImage('lib/assets/icon/ic_shoppingbag.png')),
+              child: const ImageIcon(AssetImage('assets/icon/ic_shoppingbag.png')),
             )
           ),
           BottomNavigationBarItem(
@@ -194,12 +194,12 @@ class _ScreenWarpperState extends State<ScreenWarpper> {
               })(),
                 style: const TextStyle(color: Colors.white, fontSize: 10)
               ),
-              child: const ImageIcon(AssetImage('lib/assets/icon/ic_mail.png')),
+              child: const ImageIcon(AssetImage('assets/icon/ic_mail.png')),
             )
           ),
           const BottomNavigationBarItem(
             label: '',
-            icon: ImageIcon(AssetImage('lib/assets/icon/ic_settingmenu.png') )
+            icon: ImageIcon(AssetImage('assets/icon/ic_settingmenu.png') )
           ),
         ]
       ),

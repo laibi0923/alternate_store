@@ -10,7 +10,7 @@ Widget emptyMailBoxScreen() {
         children: [
 
           Image.asset(
-            'lib/assets/icon/ic_mail.png', 
+            'assets/icon/ic_mail.png', 
             color: Colors.grey,
           ),
 

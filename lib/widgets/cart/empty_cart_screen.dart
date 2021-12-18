@@ -7,7 +7,7 @@ Widget emptyCartScreen() {
       children: [
         
         Image.asset(
-          'lib/assets/icon/ic_shoppingbag.png',
+          'assets/icon/ic_shoppingbag.png',
           color: Colors.grey,
         ),
         

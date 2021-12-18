@@ -56,6 +56,12 @@ dependencies:
   photo_view:
   uni_links:
   share_plus: 
+  flutter_launcher_icons:
+
+flutter_icons:
+  image_path: "assets/icon/lancher_icon.png"
+  android: true
+  ios: true
   
 
 dev_dependencies:
@@ -82,8 +88,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - lib/assets/icon/
-    - lib/assets/img/
+    - assets/icon/
+    - assets/img/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -184,7 +184,7 @@ class _HomeState extends State<Home> {
                     height: 30,
                     width: 30,
                     child: Image.asset(
-                      'lib/assets/icon/ic_crown.png',
+                      'assets/icon/ic_crown.png',
                       color : 
                       index == 1 ? Colors.white60 : 
                       index == 2 ? const Color(0xFFB87333) : 

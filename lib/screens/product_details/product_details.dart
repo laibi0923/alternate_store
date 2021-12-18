@@ -417,7 +417,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           ),
           child: Center(
             child: Image(
-              image: productDetailsViewModel.onWishList == true ? const AssetImage('lib/assets/icon/ic_heart_fill.png') : const AssetImage('lib/assets/icon/ic_heart.png'),
+              image: productDetailsViewModel.onWishList == true ? const AssetImage('assets/icon/ic_heart_fill.png') : const AssetImage('assets/icon/ic_heart.png'),
               color: productDetailsViewModel.onWishList == true ? Colors.redAccent : Colors.redAccent,
             ),
           )

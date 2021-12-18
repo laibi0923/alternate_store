@@ -144,7 +144,7 @@ class _UserEntranceState extends State<UserEntrance> with TickerProviderStateMix
                           borderRadius: BorderRadius.circular(999)
                         ),
                         child: const Image(
-                          image: AssetImage('lib/assets/icon/ic_google.png'),
+                          image: AssetImage('assets/icon/ic_google.png'),
                           color: Colors.white,
                         ),
                       ),
@@ -168,7 +168,7 @@ class _UserEntranceState extends State<UserEntrance> with TickerProviderStateMix
                           borderRadius: BorderRadius.circular(999)
                         ),
                         child: const Image(
-                          image: AssetImage('lib/assets/icon/ic_facebook.png'),
+                          image: AssetImage('assets/icon/ic_facebook.png'),
                           color: Colors.white,
                         ),
                       ),
@@ -186,7 +186,7 @@ class _UserEntranceState extends State<UserEntrance> with TickerProviderStateMix
                   //   child: GestureDetector(
                   //     onTap: (){},
                   //     child: const Image(
-                  //       image: AssetImage('lib/assets/icon/ic_apple.jpg')
+                  //       image: AssetImage('assets/icon/ic_apple.jpg')
                   //     ),
                   //   ),
                   // ),
