@@ -93,16 +93,16 @@ class _SearchScreenState extends State<SearchScreen> {
               icon: const Icon(Icons.arrow_back, size: 20)
             ),
             Expanded(
-                child: TextField(
-                  controller: _searchPageViewModel.searchFliedController,
-                  decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(0),
-                  isDense: true,
-                  hintText: '輸入產品名稱',
-                ),
-                onChanged: (value) => _searchPageViewModel.queryfromString(value, _productlist)
-              )
+              child: TextField(
+                controller: _searchPageViewModel.searchFliedController,
+                textInputAction: TextInputAction.done,
+                decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.all(0),
+                isDense: true,
+                hintText: '輸入產品名稱',
+              ),
+              onSubmitted: (value) => _searchPageViewModel.queryfromString(value, _productlist))
             ),
             const Padding(
               padding: EdgeInsets.only(right: 15),

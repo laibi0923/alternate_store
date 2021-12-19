@@ -2,7 +2,7 @@
     package="com.alternate.alternate_store">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE "/>
     <application
-        android:label="alternate_store"
+        android:label="ASHER"
         android:icon="@mipmap/ic_launcher">
 
         <activity

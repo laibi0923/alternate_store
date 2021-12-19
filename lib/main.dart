@@ -25,7 +25,6 @@ import 'package:alternate_store/viewmodel/setting_viewmodel.dart';
 import 'package:alternate_store/viewmodel/shipped_viewmodel.dart';
 import 'package:alternate_store/viewmodel/wishlist_viewmodel.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' ;
 import 'package:flutter_stripe/flutter_stripe.dart';

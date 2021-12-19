@@ -57,6 +57,8 @@ dependencies:
   uni_links:
   share_plus: 
   flutter_launcher_icons:
+  cloud_firestore_web: ^2.6.5
+  firebase_auth_web: ^3.3.5
 
 flutter_icons:
   image_path: "assets/icon/lancher_icon.png"
